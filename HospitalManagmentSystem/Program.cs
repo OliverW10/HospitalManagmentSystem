@@ -1,7 +1,7 @@
 ﻿using HospitalManagmentSystem.Database;
 using HospitalManagmentSystem.Database.Models;
 using HospitalManagmentSystem.Domain.Controllers;
-using HospitalManagmentSystem.Domain.Services;
+using HospitalManagmentSystem.Domain.Services.Menu;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace HospitalManagmentSystem
@@ -10,26 +10,16 @@ namespace HospitalManagmentSystem
     {
         public static void Main(string[] args)
         {
-
             ServiceProvider services = new ServiceCollection()
                 .AddDbContext<HospitalContext>()
-                .AddTransient<IMenuService, CommandLineMenuService>()
-                //.AddKeyedTransient<IController, PatientMenuController>(1)
+                .AddTransient<LoginController>()
                 .BuildServiceProvider();
 
-            var menuStack = new Stack<IController>();
-            menuStack.Push(LoginMenuController.GetLoginMenu(new CommandLineMenuService()));
-            while (menuStack.Any())
+            var loginController = services.GetRequiredService<LoginController>();
+            IMenu? currentMenu = loginController.GetLoginMenu();
+            while (currentMenu != null)
             {
-                var nextController = menuStack.Peek().Execute();
-                if (nextController == null)
-                {
-                    menuStack.Pop();
-                }
-                else
-                {
-                    menuStack.Push(nextController);
-                }
+                currentMenu = currentMenu.ExecuteAndGetNext();
             }
         }
     }

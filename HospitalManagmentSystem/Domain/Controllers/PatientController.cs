@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HospitalManagmentSystem.Domain.Controllers
 {
-    internal class PatientMenuController
+    internal class PatientController
     {
     }
 }

@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HospitalManagmentSystem.Domain.Services
+namespace HospitalManagmentSystem.Domain.Services.Menu
 {
-    internal class CommandLineMenuService : IMenuService
+    internal interface IMenu
     {
+        IMenu? ExecuteAndGetNext();
     }
 }
