@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HospitalManagmentSystem.Services
+namespace HospitalManagmentSystem.Domain.Services
 {
-    internal class EmailService
+    internal class CommandLineMenuService : IMenuService
     {
     }
 }

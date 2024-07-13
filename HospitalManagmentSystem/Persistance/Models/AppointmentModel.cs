@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HospitalManagmentSystem.Model
+namespace HospitalManagmentSystem.Database.Models
 {
-    internal class PatientModel
+    internal class AppointmentModel
     {
-        public required UserModel User { get; set; }
+        public int Id { get; set; }
         public required DoctorModel Doctor { get; set; }
+        public required PatientModel Patient { get; set; }
     }
 }

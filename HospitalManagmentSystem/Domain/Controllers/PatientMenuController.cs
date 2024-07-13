@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HospitalManagmentSystem.Services
+namespace HospitalManagmentSystem.Domain.Controllers
 {
-    internal class CommandLineMenu
+    internal class PatientMenuController
     {
     }
 }

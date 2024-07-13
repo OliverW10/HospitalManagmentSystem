@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HospitalManagmentSystem.Model
+namespace HospitalManagmentSystem.Database.Models
 {
     internal class UserModel
     {

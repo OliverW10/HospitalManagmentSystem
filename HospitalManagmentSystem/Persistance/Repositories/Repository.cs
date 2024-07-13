@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HospitalManagmentSystem.Model
+namespace HospitalManagmentSystem.Persistance.Repositories
 {
-    internal class AdminModel
+    internal class Repository
     {
-        public required UserModel User { get; set; }
     }
 }

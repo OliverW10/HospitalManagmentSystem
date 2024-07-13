@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HospitalManagmentSystem.Model
+namespace HospitalManagmentSystem.Domain.Services
 {
-    internal class DoctorModel
+    internal class EmailService : IMessageService
     {
-        public required UserModel User { get; set; }
     }
 }
