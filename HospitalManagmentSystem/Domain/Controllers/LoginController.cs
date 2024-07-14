@@ -10,7 +10,7 @@ namespace HospitalManagmentSystem.Domain.Controllers
     internal class LoginController
     {
     
-        public LoginController(IMenuFactory menuService, MenuBuilder menuBuilder, PatientController patientMenuFactory, AdminController adminMenuFactory, DoctorController doctorMenuFactory)
+        public LoginController(IMenuFactory menuService, ConsoleMenuBuilder menuBuilder, PatientController patientMenuFactory, AdminController adminMenuFactory, DoctorController doctorMenuFactory)
         {
             _menuBuilder = menuBuilder;
         }
@@ -24,6 +24,6 @@ namespace HospitalManagmentSystem.Domain.Controllers
                 .Build();
         }
 
-        MenuBuilder _menuBuilder;
+        ConsoleMenuBuilder _menuBuilder;
     }
 }
