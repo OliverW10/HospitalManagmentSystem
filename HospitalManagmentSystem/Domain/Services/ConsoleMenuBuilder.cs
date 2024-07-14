@@ -1,16 +1,37 @@
 ﻿using HospitalManagmentSystem.Domain.Controllers;
+using Microsoft.EntityFrameworkCore.Diagnostics.Internal;
 using System.ComponentModel.Design;
 using System.Security.Cryptography;
 
-namespace HospitalManagmentSystem.Domain.Services.Menu
+namespace HospitalManagmentSystem.Domain.Services
 {
-    internal class MenuBuilder : IInitialMenuBuilder, IOpenMenuBuilder
+    class ConsoleMenuBuilderFactory : IMenuBuilderFactory
     {
-        public MenuBuilder()
+        public IInitialMenuBuilder GetBuilder()
+        {
+            return new ConsoleMenuBuilder();
+        }
+    }
+
+    internal class ConsoleMenuBuilder : IInitialMenuBuilder, IOpenMenuBuilder, IOptionsMenuBuilder
+    {
+        public ConsoleMenuBuilder()
         {
         }
 
-        IMenu IOptionsMenuBuilder.GetResult()
+        public IOptionsMenuBuilder StartOptions()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IOptionsMenuBuilder Option(int num, string optionDescription, Func<IMenu> getNextMenu)
+        {
+            Console.WriteLine($"{num}) {optionDescription}");
+            _optionsMapping.Add(num, getNextMenu);
+            return this;
+        }
+
+        IMenu IOptionsMenuBuilder.GetOptionResult()
         {
             while (true)
             {
@@ -25,13 +46,6 @@ namespace HospitalManagmentSystem.Domain.Services.Menu
 
         int CharToInt(char ch) => ch - '0';
 
-        public IOptionsMenuBuilder Option(int num, string optionDescription, Func<IMenu> getNextMenu)
-        {
-            Console.WriteLine($"{num}) {optionDescription}");
-            _optionsMapping.Add(num, getNextMenu);
-            return this;
-        }
-
         public IOpenMenuBuilder Table(object table)
         {
             throw new NotImplementedException();
@@ -45,7 +59,24 @@ namespace HospitalManagmentSystem.Domain.Services.Menu
 
         public IOpenMenuBuilder Title(string title, string heading)
         {
-            throw new NotImplementedException();
+            int minPadding = 3;
+            int boxWidth = Math.Max(title.Length, heading.Length) + minPadding * 2;
+
+            Console.WriteLine($"┌{new string('─', boxWidth)}┐");
+            Console.WriteLine($"│{CenterPadToWidth(boxWidth, title)}│");
+            Console.WriteLine($"├{new string('-', boxWidth)}┤");
+            Console.WriteLine($"│{CenterPadToWidth(boxWidth, heading)}│");
+            Console.WriteLine($"└{new string('─', boxWidth)}┘\n");
+
+            return this;
+        }
+
+        string CenterPadToWidth(int width, string text, char ch = ' ')
+        {
+            int paddingNum = width - text.Length;
+            string paddingLeft = new string(' ', paddingNum / 2);
+            string paddingRight = new string(' ', width - text.Length - paddingLeft.Length); // To account for odd lengths
+            return $"{paddingLeft}{text}{paddingRight}";
         }
 
         public IPromptMenuBuilder PromptForText(string promptText, Func<string, bool> validate, Action<string> recievePromptvalue)
@@ -65,8 +96,9 @@ namespace HospitalManagmentSystem.Domain.Services.Menu
         {
             while (true)
             {
+                Console.Write(promptText);
                 var entered = Console.ReadLine();
-                if (Int32.TryParse(entered, out var enteredInt) && validate(enteredInt))
+                if (int.TryParse(entered, out var enteredInt) && validate(enteredInt))
                 {
                     recievePromptvalue(enteredInt);
                     return this;
@@ -77,9 +109,10 @@ namespace HospitalManagmentSystem.Domain.Services.Menu
         public IPromptMenuBuilder PromptForPassword(string promptText, Func<byte[], bool> validate, Action<byte[]> recievePromptvalue)
         {
             var pass = new Stack<byte>();
+            Console.Write(promptText);
             while (true)
             {
-                var key = Console.ReadKey();
+                var key = Console.ReadKey(intercept: true);
                 if (key.Key == ConsoleKey.Backspace && pass.Count > 0)
                 {
                     Console.Write("\b \b");
@@ -87,19 +120,17 @@ namespace HospitalManagmentSystem.Domain.Services.Menu
                 }
                 else if (!char.IsControl(key.KeyChar))
                 {
-                    Console.Write("\b*");
+                    Console.Write("*");
                     pass.Push((byte)key.KeyChar);
                 }
-                else if(key.Key == ConsoleKey.Enter)
+                else if (key.Key == ConsoleKey.Enter)
                 {
-                    break;
+                    Console.WriteLine();
+                    var hashed = SHA256.Create().ComputeHash(pass.ToArray());
+                    recievePromptvalue(hashed);
+                    return this;
                 }
             }
-
-            var hashed = SHA256.Create().ComputeHash(pass.ToArray());
-            recievePromptvalue(hashed);
-            return this;
-
         }
 
         Dictionary<int, Func<IMenu>> _optionsMapping = [];

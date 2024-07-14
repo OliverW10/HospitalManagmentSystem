@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HospitalManagmentSystem.Domain.Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,5 +9,9 @@ namespace HospitalManagmentSystem.Domain.Controllers
 {
     internal class PatientController
     {
+        public IMenu? PatientMainMenu()
+        {
+            return null;
+        }
     }
 }

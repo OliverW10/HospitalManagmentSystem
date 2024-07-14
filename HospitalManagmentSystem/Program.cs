@@ -1,7 +1,7 @@
 ﻿using HospitalManagmentSystem.Database;
 using HospitalManagmentSystem.Database.Models;
 using HospitalManagmentSystem.Domain.Controllers;
-using HospitalManagmentSystem.Domain.Services.Menu;
+using HospitalManagmentSystem.Domain.Services;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace HospitalManagmentSystem
@@ -13,13 +13,17 @@ namespace HospitalManagmentSystem
             ServiceProvider services = new ServiceCollection()
                 .AddDbContext<HospitalContext>()
                 .AddTransient<LoginController>()
+                .AddTransient<PatientController>()
+                .AddTransient<DoctorController>()
+                .AddTransient<AdminController>()
+                .AddTransient<IMenuBuilderFactory, ConsoleMenuBuilderFactory>()
                 .BuildServiceProvider();
 
             var loginController = services.GetRequiredService<LoginController>();
             IMenu? currentMenu = loginController.GetLoginMenu();
             while (currentMenu != null)
             {
-                currentMenu = currentMenu.ExecuteAndGetNext();
+                currentMenu = currentMenu();
             }
         }
     }

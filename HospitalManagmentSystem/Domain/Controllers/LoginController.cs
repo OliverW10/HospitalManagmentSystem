@@ -1,4 +1,4 @@
-﻿using HospitalManagmentSystem.Domain.Services.Menu;
+﻿using HospitalManagmentSystem.Domain.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,20 +10,37 @@ namespace HospitalManagmentSystem.Domain.Controllers
     internal class LoginController
     {
     
-        public LoginController(IMenuFactory menuService, ConsoleMenuBuilder menuBuilder, PatientController patientMenuFactory, AdminController adminMenuFactory, DoctorController doctorMenuFactory)
+        public LoginController(IMenuBuilderFactory menuFactory, PatientController patientController, AdminController adminController, DoctorController doctorController)
         {
-            _menuBuilder = menuBuilder;
+            _menuFactory = menuFactory;
+            _patientController = patientController;
+            _adminController = adminController;
+            _doctorController = doctorController;
         }
 
         public IMenu GetLoginMenu()
         {
-            return _menuBuilder
-                .Title("DOTNET Hospital Managment System", "Login")
-                .PromptFor<int>("ID: ", val => { })
-                .PromptFor<>()
-                .Build();
+            int? loginId = null;
+            byte[]? loginPassword = null;
+            while (true)
+            {
+                var menu = _menuFactory.GetBuilder()
+                    .Title("DOTNET Hospital Managment System", "Login")
+                    .PromptForNumber("ID: ", _ => true, id => loginId = id)
+                    .PromptForPassword("Password: ", _ => true, pw => loginPassword = pw);
+
+                if(true) // check id+password
+                {
+                    menu.Text("Valid Credentials");
+                    Thread.Sleep(500);
+                    return _patientController.PatientMainMenu;
+                }
+            }
         }
 
-        ConsoleMenuBuilder _menuBuilder;
+        IMenuBuilderFactory _menuFactory;
+        PatientController _patientController;
+        AdminController _adminController;
+        DoctorController _doctorController;
     }
 }

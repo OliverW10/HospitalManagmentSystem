@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HospitalManagmentSystem.Domain.Services.Menu
+namespace HospitalManagmentSystem.Domain.Services
 {
     // The below interfaces express a 'fluent' API for constructing a menu
     // Allows for builder-like usage while using the type system to restrict unwanted behaviour (e.g. a title box after a prompt)
@@ -14,16 +14,17 @@ namespace HospitalManagmentSystem.Domain.Services.Menu
         IOpenMenuBuilder Title(string title, string heading);
     }
 
-    interface IOpenMenuBuilder : IPromptMenuBuilder, IOptionsMenuBuilder
+    interface IOpenMenuBuilder : IPromptMenuBuilder
     {
         new IOpenMenuBuilder Text(string text);
         IOpenMenuBuilder Table(object table);
+        IOptionsMenuBuilder StartOptions();
     }
 
     interface IOptionsMenuBuilder
     {
         IOptionsMenuBuilder Option(int num, string optionDescription, Func<IMenu> getNextMenu);
-        IMenu GetResult();
+        IMenu GetOptionResult();
     }
 
 
@@ -37,5 +38,5 @@ namespace HospitalManagmentSystem.Domain.Services.Menu
     }
 
     // I?
-    public delegate IMenu IMenu();
+    public delegate IMenu? IMenu();
 }
