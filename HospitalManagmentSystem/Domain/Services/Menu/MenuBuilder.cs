@@ -6,11 +6,6 @@ namespace HospitalManagmentSystem.Domain.Services.Menu
     // The below interfaces express a 'fluent' API for constructing a menu
     // Allows for builder-like usage while using the type system to restrict unwanted behaviour (e.g. a title box after a prompt)
 
-    interface IFinishedMenuBuilder
-    {
-        IMenu Build(IMenuFactory menuService);
-    }
-
     interface IInitialMenuBuilder
     {
         IOpenMenuBuilder Title(string title, string heading);
@@ -28,13 +23,21 @@ namespace HospitalManagmentSystem.Domain.Services.Menu
         OptionsMenuBuilder Text(string text);
     }
 
+
     interface IPromptMenuBuilder
     {
-        IPromptMenuBuilder PromptFor<T>(string promptText, Func<T, bool> validate, Action<T> recievePromptValue) where S : IPromptStrategy<T>;
+        // TODO: can use generic here?
+        IPromptMenuBuilder PromptForText(string promptText, Func<string, bool> validate, Action<string> recievePromptvalue);
+        IPromptMenuBuilder PromptForNumber(string promptText, Func<int, bool> validate, Action<int> recievePromptvalue);
+        IPromptMenuBuilder PromptForPassword(string promptText, Func<byte[], bool> validate, Action<byte[]> recievePromptvalue);
         IPromptMenuBuilder Text(string text);
         IFinishedMenuBuilder FinishedPrompting(Func<IMenu> getNextMenu);
     }
 
+    interface IFinishedMenuBuilder
+    {
+        IMenu GetNext();
+    }
 
     internal class MenuBuilder : IFinishedMenuBuilder, IInitialMenuBuilder, IOpenMenuBuilder
     {
@@ -42,7 +45,7 @@ namespace HospitalManagmentSystem.Domain.Services.Menu
         {
         }
 
-        public IMenu Build(IMenuFactory menuService)
+        public IMenu GetNext()
         {
             throw new NotImplementedException();
         }
@@ -53,11 +56,6 @@ namespace HospitalManagmentSystem.Domain.Services.Menu
         }
 
         public OptionsMenuBuilder Option(int num, string optionDescription, Func<IMenu> getNextMenu)
-        {
-            throw new NotImplementedException();
-        }
-
-        public IPromptMenuBuilder PromptFor<T>(string promptText, Func<T, bool> validate, Action<T> recievePromptValue)
         {
             throw new NotImplementedException();
         }
@@ -83,6 +81,21 @@ namespace HospitalManagmentSystem.Domain.Services.Menu
         }
 
         OptionsMenuBuilder OptionsMenuBuilder.Text(string text)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IPromptMenuBuilder PromptForText(string promptText, Func<string, bool> validate, Action<string> recievePromptvalue)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IPromptMenuBuilder PromptForNumber(string promptText, Func<int, bool> validate, Action<int> recievePromptvalue)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IPromptMenuBuilder PromptForPassword(string promptText, Func<byte[], bool> validate, Action<byte[]> recievePromptvalue)
         {
             throw new NotImplementedException();
         }
