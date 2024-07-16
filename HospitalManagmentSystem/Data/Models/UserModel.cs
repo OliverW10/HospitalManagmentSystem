@@ -6,12 +6,19 @@ using System.Threading.Tasks;
 
 namespace HospitalManagmentSystem.Database.Models
 {
-    internal class UserModel
+    public class UserModel
     {
         public required int Id { get; set; }
         public required string Name { get; set; }
         public required string Address { get; set; }
         public required string Email { get; set; }
         public required string Phone { get; set; }
+        public required byte[] Password { get; set; }
+        public required UserType Discriminator { get; set; }
+    }
+
+    public enum UserType
+    {
+        Doctor, Patient, Admin
     }
 }

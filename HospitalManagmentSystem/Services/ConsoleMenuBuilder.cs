@@ -1,30 +1,39 @@
-﻿using HospitalManagmentSystem.Domain.Controllers;
-using Microsoft.EntityFrameworkCore.Diagnostics.Internal;
-using System.ComponentModel.Design;
-using System.Security.Cryptography;
-
-namespace HospitalManagmentSystem.Domain.Services
+﻿
+namespace HospitalManagmentSystem.Services
 {
     class ConsoleMenuBuilderFactory : IMenuBuilderFactory
     {
+        public ConsoleMenuBuilderFactory(ConfigService config, IHasherService hasher)
+        {
+            _config = config;
+            _hasher = hasher;
+        }
+
         public IInitialMenuBuilder GetBuilder()
         {
-            return new ConsoleMenuBuilder();
+            return new ConsoleMenuBuilder(_config, _hasher);
         }
+
+        // TODO: work out how to not have to keep adding twice
+        ConfigService _config;
+        IHasherService _hasher;
     }
 
     internal class ConsoleMenuBuilder : IInitialMenuBuilder, IOpenMenuBuilder, IOptionsMenuBuilder
     {
-        public ConsoleMenuBuilder()
+        public ConsoleMenuBuilder(ConfigService config, IHasherService hasher)
         {
+            _config = config;
+            _hasher = hasher;
         }
 
         public IOptionsMenuBuilder StartOptions()
         {
-            throw new NotImplementedException();
+            _optionsMapping = new Dictionary<int, IMenu>();
+            return this;
         }
 
-        public IOptionsMenuBuilder Option(int num, string optionDescription, Func<IMenu> getNextMenu)
+        public IOptionsMenuBuilder Option(int num, string optionDescription, IMenu getNextMenu)
         {
             Console.WriteLine($"{num}) {optionDescription}");
             _optionsMapping.Add(num, getNextMenu);
@@ -39,7 +48,7 @@ namespace HospitalManagmentSystem.Domain.Services
                 var pressedNum = CharToInt(pressedKey.KeyChar);
                 if (_optionsMapping.TryGetValue(pressedNum, out var menuGetter))
                 {
-                    return menuGetter();
+                    return menuGetter;
                 }
             }
         }
@@ -55,6 +64,11 @@ namespace HospitalManagmentSystem.Domain.Services
         {
             Console.WriteLine(text);
             return this;
+        }
+
+        public IOpenMenuBuilder Title(string heading)
+        {
+            return Title(_config.ApplcationName, heading);
         }
 
         public IOpenMenuBuilder Title(string title, string heading)
@@ -108,7 +122,7 @@ namespace HospitalManagmentSystem.Domain.Services
 
         public IPromptMenuBuilder PromptForPassword(string promptText, Func<byte[], bool> validate, Action<byte[]> recievePromptvalue)
         {
-            var pass = new Stack<byte>();
+            var pass = new Stack<char>();
             Console.Write(promptText);
             while (true)
             {
@@ -121,18 +135,20 @@ namespace HospitalManagmentSystem.Domain.Services
                 else if (!char.IsControl(key.KeyChar))
                 {
                     Console.Write("*");
-                    pass.Push((byte)key.KeyChar);
+                    pass.Push(key.KeyChar);
                 }
                 else if (key.Key == ConsoleKey.Enter)
                 {
                     Console.WriteLine();
-                    var hashed = SHA256.Create().ComputeHash(pass.ToArray());
+                    var hashed = _hasher.HashPassword(new string(pass.ToArray()));
                     recievePromptvalue(hashed);
                     return this;
                 }
             }
         }
 
-        Dictionary<int, Func<IMenu>> _optionsMapping = [];
+        Dictionary<int, IMenu> _optionsMapping = [];
+        ConfigService _config;
+        IHasherService _hasher;
     }
 }

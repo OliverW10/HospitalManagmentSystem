@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HospitalManagmentSystem.Domain.Controllers
+namespace HospitalManagmentSystem.Services
 {
-    internal class AdminController
+    internal interface IMessageService
     {
+        void Send(string toAddress, string contents);
     }
 }

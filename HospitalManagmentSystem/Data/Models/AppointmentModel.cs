@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace HospitalManagmentSystem.Database.Models
 {
-    internal class AppointmentModel
+    public class AppointmentModel
     {
         public int Id { get; set; }
         public required DoctorModel Doctor { get; set; }

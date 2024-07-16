@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HospitalManagmentSystem.Domain.Services
+namespace HospitalManagmentSystem.Services
 {
     internal interface IMenuBuilderFactory
     {

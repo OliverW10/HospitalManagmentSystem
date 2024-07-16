@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace HospitalManagmentSystem.Database.Models
 {
-    internal class AdminModel
+    public class AdminModel
     {
         [Key]
         [ForeignKey(nameof(User))]

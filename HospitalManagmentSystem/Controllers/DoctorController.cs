@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HospitalManagmentSystem.Persistance.Repositories
+namespace HospitalManagmentSystem.Controllers
 {
-    internal interface IRepository
+    internal class DoctorController
     {
     }
 }

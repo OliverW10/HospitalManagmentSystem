@@ -1,18 +1,19 @@
-﻿using HospitalManagmentSystem.Database.Models;
+﻿using HospitalManagmentSystem.Data;
+using HospitalManagmentSystem.Database.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace HospitalManagmentSystem.Database
 {
-    interface IDbContextConfigurator
+    internal interface IDbContextConfigurator
     {
         void Configure(DbContextOptionsBuilder options);    
     }
 
-    class SqlLiteContextProvider : IDbContextConfigurator
+    internal class SQLiteContextConfigurator : IDbContextConfigurator
     {
         string DbPath { get; }
 
-        SqlLiteContextProvider(string filename = "hospital.db")
+        SQLiteContextConfigurator(string filename = "hospital.db")
         {
             var folder = Environment.SpecialFolder.LocalApplicationData;
             var path = Environment.GetFolderPath(folder);
@@ -25,12 +26,12 @@ namespace HospitalManagmentSystem.Database
         }
     }
 
-    class SqlServerContextProvider : IDbContextConfigurator
+    internal class SqlServerContextConfigurator : IDbContextConfigurator
     {
         string HostName { get; }
         string DatabaseName { get; }
 
-        SqlServerContextProvider(string hostname = "localhost", string dbName = "HospitalAssignment")
+        SqlServerContextConfigurator(string hostname = "localhost", string dbName = "HospitalAssignment")
         {
             HostName = hostname;
             DatabaseName = dbName;
@@ -38,12 +39,12 @@ namespace HospitalManagmentSystem.Database
 
         public void Configure(DbContextOptionsBuilder options)
         {
-            options.UseSqlServer("Server=localhost;Database=AuditAPIDemo;Trusted_Connection=True;TrustServerCertificate=True;");
+            options.UseSqlServer("Server=localhost;Database=HospitalAssignment;Trusted_Connection=True;TrustServerCertificate=True;");
         }
     }
 
 
-    internal class HospitalContext : DbContext
+    internal class HospitalContext : DbContext, IHospitalContext
     {
         public DbSet<UserModel> Users { get; set; }
         public DbSet<PatientModel> Patients { get; set; }

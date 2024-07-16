@@ -8,11 +8,12 @@ using System.Threading.Tasks;
 
 namespace HospitalManagmentSystem.Database.Models
 {
-    internal class DoctorModel
+    public class PatientModel
     {
         [Key]
         [ForeignKey(nameof(User))]
         public int UserId { get; set; }
         public required UserModel User { get; set; }
+        public required DoctorModel Doctor { get; set; }
     }
 }

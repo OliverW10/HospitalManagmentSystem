@@ -1,7 +1,8 @@
-﻿using HospitalManagmentSystem.Database;
+﻿using HospitalManagmentSystem.Controllers;
+using HospitalManagmentSystem.Database;
 using HospitalManagmentSystem.Database.Models;
-using HospitalManagmentSystem.Domain.Controllers;
-using HospitalManagmentSystem.Domain.Services;
+using HospitalManagmentSystem.Services;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace HospitalManagmentSystem
@@ -16,15 +17,24 @@ namespace HospitalManagmentSystem
                 .AddTransient<PatientController>()
                 .AddTransient<DoctorController>()
                 .AddTransient<AdminController>()
+                .AddSingleton<ConfigService>()
+                .AddSingleton<IDbContextConfigurator, SQLiteContextConfigurator>()
                 .AddTransient<IMenuBuilderFactory, ConsoleMenuBuilderFactory>()
+                .AddTransient<IMessageService, EmailService>()
                 .BuildServiceProvider();
+
+            var emailer = services.GetRequiredService<IMessageService>();
+            emailer.Send("oliver.warrick2@gmail.com", "this is the contents of my email test test test");
 
             var loginController = services.GetRequiredService<LoginController>();
             IMenu? currentMenu = loginController.GetLoginMenu();
+            var state = new AppState();
             while (currentMenu != null)
             {
-                currentMenu = currentMenu();
+                currentMenu = currentMenu(state);
             }
+
+            //new DbSet<UserModel>();
         }
     }
 }
