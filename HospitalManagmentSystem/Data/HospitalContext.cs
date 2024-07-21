@@ -1,4 +1,5 @@
 ﻿using HospitalManagmentSystem.Data;
+using HospitalManagmentSystem.Data.Repositories;
 using HospitalManagmentSystem.Database.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -44,13 +45,8 @@ namespace HospitalManagmentSystem.Database
     }
 
 
-    internal class HospitalContext : DbContext, IHospitalContext
+    internal class HospitalContext : DbContext, IUnitOfWork
     {
-        public DbSet<UserModel> Users { get; set; }
-        public DbSet<PatientModel> Patients { get; set; }
-        public DbSet<DoctorModel> Doctors { get; set; }
-        public DbSet<AdminModel> Admins { get; set; }
-        public DbSet<AppointmentModel> Appointments { get; set; }
 
         HospitalContext(IDbContextConfigurator contextProvider)
         {
@@ -61,6 +57,20 @@ namespace HospitalManagmentSystem.Database
         {
             _contextProvider.Configure(options);
         }
+
+        DbSet<UserModel> Users { get; set; }
+
+        public IRepository<AdminModel> AdminRepository => throw new NotImplementedException();
+        DbSet<AdminModel> Admins { get; set; }
+
+        public IRepository<AppointmentModel> AppointmentRepository => throw new NotImplementedException();
+        DbSet<AppointmentModel> Appointments { get; set; }
+
+        public IRepository<DoctorModel> DoctorRepository => throw new NotImplementedException();
+        DbSet<DoctorModel> Doctors { get; set; }
+
+        public IRepository<PatientModel> PatientRepository => throw new NotImplementedException();
+        DbSet<PatientModel> Patients { get; set; }
 
         IDbContextConfigurator _contextProvider;
     }

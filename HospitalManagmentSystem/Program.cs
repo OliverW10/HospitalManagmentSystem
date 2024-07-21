@@ -23,16 +23,17 @@ namespace HospitalManagmentSystem
                 .AddTransient<IMessageService, EmailService>()
                 .BuildServiceProvider();
 
-            var emailer = services.GetRequiredService<IMessageService>();
-            emailer.Send("oliver.warrick2@gmail.com", "this is the contents of my email test test test");
+            Console.WriteLine(Console.OutputEncoding);
+            //var emailer = services.GetRequiredService<IMessageService>();
+            //emailer.Send("oliver.warrick2@gmail.com", "this is the contents of my email test test test");
 
-            var loginController = services.GetRequiredService<LoginController>();
-            IMenu? currentMenu = loginController.GetLoginMenu();
-            var state = new AppState();
-            while (currentMenu != null)
-            {
-                currentMenu = currentMenu(state);
-            }
+            //var loginController = services.GetRequiredService<LoginController>();
+            //IMenu? currentMenu = loginController.GetLoginMenu();
+            //var state = new AppState();
+            //while (currentMenu != null)
+            //{
+            //    currentMenu = currentMenu(state);
+            //}
 
             //new DbSet<UserModel>();
         }

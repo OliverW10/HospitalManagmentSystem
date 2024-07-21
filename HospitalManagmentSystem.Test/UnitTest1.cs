@@ -14,7 +14,7 @@ namespace HospitalManagmentSystem.Test
         [Test]
         public void Test1()
         {
-            new Mock<DbSet<AdminModel>>();
+            var mock = new Mock<DbSet<AdminModel>>().Setup(s => s.);
             Assert.Pass();
         }
     }

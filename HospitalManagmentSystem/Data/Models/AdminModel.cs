@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using HospitalManagmentSystem.Data.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -9,11 +10,11 @@ using System.Threading.Tasks;
 
 namespace HospitalManagmentSystem.Database.Models
 {
-    public class AdminModel
+    public class AdminModel : IDbModel
     {
         [Key]
         [ForeignKey(nameof(User))]
-        public int UserId { get; set; }
+        public int Id { get; set; }
         public required UserModel User { get; set; }
     }
 }
