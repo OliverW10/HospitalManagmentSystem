@@ -24,11 +24,11 @@ namespace HospitalManagmentSystem.Controllers
         {
             int? loginId = null;
             byte[]? loginHashedPassword = null;
+            var menu = _menuFactory.GetBuilder()
+                .Title("Login");
             while (true)
             {
-                var menu = _menuFactory.GetBuilder()
-                    .Title("Login")
-                    .PromptForNumber("ID: ", _ => true, id => loginId = id)
+                menu.PromptForNumber("ID: ", _ => true, id => loginId = id)
                     .PromptForPassword("Password: ", _ => true, pw => loginHashedPassword = pw);
     
                 // TODO: maybe should use combine user table?
@@ -45,6 +45,8 @@ namespace HospitalManagmentSystem.Controllers
                     ShowCorrect(menu);
                     return null;
                 }
+
+                menu.Text("No matching account. Try again.");
             }
         }
 

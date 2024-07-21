@@ -61,9 +61,6 @@ namespace HospitalManagmentSystem.Database
         {
             options.UseSqlServer("Server=localhost;Database=HospitalAssignment;Trusted_Connection=True;TrustServerCertificate=True;");
             //_contextProvider.Configure(options);
-
-            options.Conventions.Remove<ManyToManyCascadeDeleteConvention>();
-            builder.Conventions.Remove<OneToManyCascadeDeleteConvention>();
         }
 
 
