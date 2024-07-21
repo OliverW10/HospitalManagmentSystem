@@ -1,11 +1,6 @@
 ﻿using HospitalManagmentSystem.Database;
 using HospitalManagmentSystem.Database.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HospitalManagmentSystem.Data.Repositories
 {
@@ -16,8 +11,8 @@ namespace HospitalManagmentSystem.Data.Repositories
         public IQueryable<AppointmentModel> GetAll()
         {
             return _context.Appointments
-                .Include(a => a.Patient).ThenInclude(p => p.User)
-                .Include(a => a.Doctor).ThenInclude(d => d.User);
+                .Include(a => a.Patient)
+                .Include(a => a.Doctor);
         }
     }
 }

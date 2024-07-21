@@ -10,7 +10,7 @@ namespace HospitalManagmentSystem.Data.Repositories
 
         public IQueryable<AdminModel> GetAll()
         {
-            return _context.Admins.Include(u => u.User);
+            return _context.Admins;
         }
     }
 }

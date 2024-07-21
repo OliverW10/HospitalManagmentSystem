@@ -1,17 +1,10 @@
-﻿using HospitalManagmentSystem.Database.Models;
-using HospitalManagmentSystem.Services;
-using Microsoft.Identity.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using HospitalManagmentSystem.Services;
 
 namespace HospitalManagmentSystem.Controllers
 {
-    internal class PatientController
+    internal class PatientMenu
     {
-        public PatientController(IMenuBuilderFactory menuFactory)
+        public PatientMenu(IMenuBuilderFactory menuFactory)
         {
             _menuFactory = menuFactory;
         }

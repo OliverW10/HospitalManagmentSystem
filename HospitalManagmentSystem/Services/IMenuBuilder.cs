@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace HospitalManagmentSystem.Services
+﻿namespace HospitalManagmentSystem.Services
 {
     // The below interfaces express a 'fluent' API for constructing a menu
     // Allows for builder-like usage while using the type system to restrict unwanted behaviour (e.g. a title box after a prompt)
