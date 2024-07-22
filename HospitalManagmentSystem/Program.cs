@@ -28,7 +28,16 @@ namespace HospitalManagmentSystem
                 .AddTransient<PatientMenu>()
                 .AddTransient<DoctorMenu>()
                 .AddTransient<AdminMenu>()
+                .AddTransient<Seeder>()
+                .AddSingleton<Random>(Random.Shared)
                 .BuildServiceProvider();
+
+            //if (args.Any(arg => arg == "seed"))
+            //{
+            var seeder = services.GetRequiredService<Seeder>();
+            seeder.Seed();
+
+            //}
 
             //var emailer = services.GetRequiredService<IMessageService>();
             //emailer.Send("oliver.warrick2@gmail.com", "this is the contents of my email test test test");

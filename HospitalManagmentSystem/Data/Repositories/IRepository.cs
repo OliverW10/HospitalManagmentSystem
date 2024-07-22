@@ -1,10 +1,9 @@
 ﻿using HospitalManagmentSystem.Data.Models;
-using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 
 namespace HospitalManagmentSystem.Data.Repositories
 {
-    internal interface IRepository<T> where T : IDbModel
+    public interface IRepository<T> where T : IDbModel
     {
         IQueryable<T> GetAll();
 
@@ -18,7 +17,7 @@ namespace HospitalManagmentSystem.Data.Repositories
     }
 
     // Using extension methods allows the implementation of helpers for both the real Repository and also for the mocks used in tests.
-    internal static class IRepositoryExtensions
+    public static class IRepositoryExtensions
     {
         public static T GetById<T>(this IRepository<T> repo, int id) where T : IDbModel
         {
@@ -32,7 +31,11 @@ namespace HospitalManagmentSystem.Data.Repositories
 
         public static T GetRandom<T>(this IRepository<T> repo, Random rand) where T : IDbModel
         {
-            return repo.GetAll().Skip(rand.Next(repo.GetAll().Count())).Take(1).First();
+            var all = repo.GetAll();
+            var skipped = all.Skip(rand.Next(all.Count()));
+            var took = skipped.Take(1);
+            var first = took.First();
+            return first;
         }
     }
 }

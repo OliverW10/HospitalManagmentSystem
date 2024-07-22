@@ -3,7 +3,7 @@ using HospitalManagmentSystem.Database.Models;
 
 namespace HospitalManagmentSystem.Data
 {
-    internal interface IUnitOfWork
+    public interface IUnitOfWork
     {
         IRepository<AdminModel> AdminRepository { get; }
         IRepository<AppointmentModel> AppointmentRepository { get; }

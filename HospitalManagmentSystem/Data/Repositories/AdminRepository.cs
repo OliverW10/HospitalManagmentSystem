@@ -1,6 +1,5 @@
 ﻿using HospitalManagmentSystem.Database;
 using HospitalManagmentSystem.Database.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace HospitalManagmentSystem.Data.Repositories
 {

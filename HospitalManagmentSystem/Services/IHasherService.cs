@@ -1,6 +1,6 @@
 ﻿namespace HospitalManagmentSystem.Services
 {
-    internal interface IHasherService
+    public interface IHasherService
     {
         byte[] HashPassword(string password);
     }

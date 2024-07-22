@@ -1,16 +1,10 @@
 ﻿using HospitalManagmentSystem.Data;
 using HospitalManagmentSystem.Data.Repositories;
 using HospitalManagmentSystem.Database.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace HospitalManagmentSystem.Services
 {
-    internal class Seeder
+    public class Seeder
     {
         public Seeder(IUnitOfWork unitOfWork, IHasherService hasher, Random rand)
         {
@@ -19,19 +13,22 @@ namespace HospitalManagmentSystem.Services
             _rand = rand;
         }
 
-        public void Seed(Random rand)
+        public void Seed(int numOfEach = 10)
         {
-            for(int i = 0; i < 10; i++)
+            for (int i = 0; i < numOfEach; i++)
             {
                 AddAdmin();
                 AddDoctor();
                 AddPatient();
             }
 
-            for(int i = 0; i < 10; i++)
+            for (int i = 0; i < numOfEach; i++)
             {
-                AddAppointMent();
+                AssignPatientToDoctor();
+                AddAppointment();
             }
+
+            _uow.SaveChanges();
         }
 
         string FirstName => FirstNames[_rand.Next(FirstNames.Length)];
@@ -43,7 +40,7 @@ namespace HospitalManagmentSystem.Services
         string StreetNum => Math.Round(_rand.NextDouble() * Math.Pow(10, 1 + _rand.Next(3))).ToString();
         string City => Cities[_rand.Next(Cities.Length)];
         string Address => $"{StreetNum} {Street}, {City}";
-        byte[] Password => _hasher.HashPassword(_rand.NextDouble().ToString());
+        byte[] Password => _hasher.HashPassword("asdf");
         string Phone => string.Join("", Enumerable.Range(0, 8).Select(i => _rand.Next(10)));
 
         void AddAdmin()
@@ -63,18 +60,20 @@ namespace HospitalManagmentSystem.Services
 
         void AssignPatientToDoctor()
         {
-
+            var doctor = _uow.DoctorRepository.GetRandom(_rand);
+            var patient = _uow.PatientRepository.GetRandom(_rand);
+            patient.Doctor = doctor;
         }
 
-        void AddAppointMent()
+        public void AddAppointment()
         {
             var doctor = _uow.DoctorRepository.GetRandom(_rand);
             var patient = _uow.PatientRepository.GetRandom(_rand);
             _uow.AppointmentRepository.Add(new AppointmentModel { Doctor = doctor, Patient = patient });
         }
 
-        string[] FirstNames => new[] {"Normand", "Stan", "Irma", "Pierre", "Erick"};
-        string[] LastNames => new[] { "Hooper", "Rose", "Melton", "Pena", "Kelley"};
+        string[] FirstNames => new[] { "Normand", "Stan", "Irma", "Pierre", "Erick" };
+        string[] LastNames => new[] { "Hooper", "Rose", "Melton", "Pena", "Kelley" };
         string[] Streets => new[] { "Oak Way", "Marion Drive", "Boggess Street", "Pearlman Avenue", "Creekside Lane" };
         string[] Cities => new[] { "Cleveland", "San Luis Obispo", "Pensacola", "Weekiwachee Spgs.", "Marshalltown" };
         string[] EmailDomains => new[] { "mailing.com", "internet.net", "fakemail.gov.au", "pmail.com", "waaaa.io" };

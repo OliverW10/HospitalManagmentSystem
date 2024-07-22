@@ -1,6 +1,6 @@
 ﻿namespace HospitalManagmentSystem.Data.Models
 {
-    internal interface IDbModel
+    public interface IDbModel
     {
         int Id { get; set; }
     }

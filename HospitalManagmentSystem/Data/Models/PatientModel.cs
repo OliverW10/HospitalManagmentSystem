@@ -1,6 +1,5 @@
 ﻿using HospitalManagmentSystem.Data.Models;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HospitalManagmentSystem.Database.Models
 {

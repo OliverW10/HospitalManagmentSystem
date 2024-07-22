@@ -1,8 +1,5 @@
-﻿using HospitalManagmentSystem.Data;
-using HospitalManagmentSystem.Data.Repositories;
-using HospitalManagmentSystem.Database.Models;
+﻿using HospitalManagmentSystem.Database.Models;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Design;
 
 namespace HospitalManagmentSystem.Database
 {
@@ -53,7 +50,7 @@ namespace HospitalManagmentSystem.Database
     internal class HospitalContext : DbContext
     {
 
-       public HospitalContext()
+        public HospitalContext()
         {
         }
 

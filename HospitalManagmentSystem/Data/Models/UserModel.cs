@@ -1,6 +1,4 @@
-﻿using HospitalManagmentSystem.Data.Models;
-
-namespace HospitalManagmentSystem.Database.Models
+﻿namespace HospitalManagmentSystem.Database.Models
 {
     public class UserData
     {
