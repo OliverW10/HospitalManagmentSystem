@@ -9,8 +9,6 @@ namespace HospitalManagmentSystem.Data.Repositories
 
         void Add(T entity);
 
-        void Update(T entity);
-
         void Remove(T entity);
 
         void SaveChanges();

@@ -65,5 +65,6 @@ namespace HospitalManagmentSystem.Database
         public DbSet<AppointmentModel> Appointments { get; set; }
         public DbSet<DoctorModel> Doctors { get; set; }
         public DbSet<PatientModel> Patients { get; set; }
+        public DbSet<UserModel> Users { get; set; }
     }
 }

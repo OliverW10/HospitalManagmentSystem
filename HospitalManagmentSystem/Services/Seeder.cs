@@ -22,6 +22,9 @@ namespace HospitalManagmentSystem.Services
                 AddPatient();
             }
 
+            // https://stackoverflow.com/questions/46184937/dbcontext-not-returning-local-objects/46330600
+            _uow.SaveChanges();
+
             for (int i = 0; i < numOfEach; i++)
             {
                 AssignPatientToDoctor();
@@ -43,19 +46,30 @@ namespace HospitalManagmentSystem.Services
         byte[] Password => _hasher.HashPassword("asdf");
         string Phone => string.Join("", Enumerable.Range(0, 8).Select(i => _rand.Next(10)));
 
+        UserModel GetUser()
+        {
+            return new UserModel { Address = Address, Email = Email, Name = Name, Password = Password, Phone = Phone }; 
+        }
+
         void AddAdmin()
         {
-            _uow.AdminRepository.Add(new AdminModel { Address = Address, Email = Email, Name = Name, Password = Password, Phone = Phone });
+            var user = GetUser();
+            user.Discriminator = UserType.Admin;
+            _uow.AdminRepository.Add(new AdminModel { User = user });
         }
 
         void AddDoctor()
         {
-            _uow.DoctorRepository.Add(new DoctorModel { Address = Address, Email = Email, Name = Name, Password = Password, Phone = Phone });
+            var user = GetUser();
+            user.Discriminator = UserType.Doctor;
+            _uow.AdminRepository.Add(new DoctorModel { User = user });
         }
 
         void AddPatient()
         {
-            _uow.PatientRepository.Add(new PatientModel { Address = Address, Email = Email, Name = Name, Password = Password, Phone = Phone });
+            var user = GetUser();
+            user.Discriminator = UserType.Patient;
+            _uow.AdminRepository.Add(new PatientModel { User = user });
         }
 
         void AssignPatientToDoctor()
