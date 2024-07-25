@@ -11,6 +11,6 @@ namespace HospitalManagmentSystem.Database.Models
         public int Id { get; set; }
         public required UserModel User { get; set; }
 
-        public required List<PatientModel> Patients { get; set; }
+        public List<PatientModel> Patients { get; set; } = new List<PatientModel>();
     }
 }

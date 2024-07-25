@@ -62,14 +62,14 @@ namespace HospitalManagmentSystem.Services
         {
             var user = GetUser();
             user.Discriminator = UserType.Doctor;
-            _uow.AdminRepository.Add(new DoctorModel { User = user });
+            _uow.DoctorRepository.Add(new DoctorModel { User = user });
         }
 
         void AddPatient()
         {
             var user = GetUser();
             user.Discriminator = UserType.Patient;
-            _uow.AdminRepository.Add(new PatientModel { User = user });
+            _uow.PatientRepository.Add(new PatientModel { User = user });
         }
 
         void AssignPatientToDoctor()

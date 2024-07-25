@@ -29,9 +29,9 @@ namespace HospitalManagmentSystem.Test.Services
             uow.Setup(u => u.PatientRepository).Returns(patientRepo.Object);
             uow.Setup(u => u.AppointmentRepository).Returns(appointmentRepo.Object);
 
-            var doctors = new List<DoctorModel>() { new DoctorModel { Address = "", Email = "", Name = "", Password = Array.Empty<byte>(), Phone = "" } };
+            var doctors = new List<DoctorModel>() { new DoctorModel { User = new UserModel() { Address = "", Email = "", Name = "", Password = Array.Empty<byte>(), Phone = "" } } };
             doctorRepo.Setup(r => r.GetAll()).Returns(doctors.AsQueryable());
-            var patients = new List<PatientModel>() { new PatientModel { Address = "", Email = "", Name = "", Password = Array.Empty<byte>(), Phone = "" } };
+            var patients = new List<PatientModel>() { new PatientModel { User = new UserModel() { Address = "", Email = "", Name = "", Password = Array.Empty<byte>(), Phone = "" } } };
             patientRepo.Setup(r => r.GetAll()).Returns(patients.AsQueryable());
 
             var hasher = new Mock<IHasherService>();

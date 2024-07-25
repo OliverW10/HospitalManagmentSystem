@@ -10,6 +10,6 @@ namespace HospitalManagmentSystem.Database.Models
         [ForeignKey(nameof(User))]
         public int Id { get; set; }
         public required UserModel User { get; set; }
-        public required DoctorModel Doctor { get; set; }
+        public DoctorModel? Doctor { get; set; }
     }
 }
