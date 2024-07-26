@@ -13,10 +13,10 @@ namespace HospitalManagmentSystem
         public static void Main(string[] args)
         {
             ServiceProvider services = new ServiceCollection()
-                .AddTransient<ConfigService>()
                 .AddSingleton<IDbContextConfigurator, SqlServerContextConfigurator>()
                 .AddDbContext<HospitalContext>()
                 .AddTransient<IUnitOfWork, UnitOfWork>()
+                .AddTransient<IRepository<UserModel>, UserRepository>()
                 .AddTransient<IRepository<AdminModel>, AdminRepository>()
                 .AddTransient<IRepository<AppointmentModel>, AppointmentRepository>()
                 .AddTransient<IRepository<DoctorModel>, DoctorRepository>()
@@ -24,30 +24,37 @@ namespace HospitalManagmentSystem
                 .AddTransient<IMenuBuilderFactory, ConsoleMenuBuilderFactory>()
                 .AddTransient<IMessageService, EmailService>()
                 .AddTransient<IHasherService, HasherService>()
-                .AddTransient<LoginMenu>()
-                .AddTransient<PatientMenu>()
-                .AddTransient<DoctorMenu>()
-                .AddTransient<AdminMenu>()
+                .AddTransient<LoginModule>()
+                .AddTransient<PatientModule>()
+                .AddTransient<DoctorModule>()
+                .AddTransient<AdminModule>()
+                .AddTransient<IModuleLocator, ModuleLocator>()
                 .AddTransient<Seeder>()
                 .AddSingleton<Random>(Random.Shared)
                 .BuildServiceProvider();
 
             //if (args.Any(arg => arg == "seed"))
             //{
-            var seeder = services.GetRequiredService<Seeder>();
-            seeder.Seed();
-
+            //Console.WriteLine("Starting Seeding database");
+            //var seeder = services.GetRequiredService<Seeder>();
+            //seeder.Seed();
+            //Console.WriteLine("Finished Seeding database");
             //}
 
             //var emailer = services.GetRequiredService<IMessageService>();
             //emailer.Send("oliver.warrick2@gmail.com", "this is the contents of my email test test test");
 
-            var loginController = services.GetRequiredService<LoginMenu>();
+            var threadHandle = new Thread(() =>
+            {
+                Console.Write("a");
+                Thread.Sleep(1000);
+            });
+
+            var loginController = services.GetRequiredService<LoginModule>();
             IMenu? currentMenu = loginController.GetLoginMenu();
-            var state = new AppState();
             while (currentMenu != null)
             {
-                currentMenu = currentMenu(state);
+                currentMenu = currentMenu();
             }
         }
     }

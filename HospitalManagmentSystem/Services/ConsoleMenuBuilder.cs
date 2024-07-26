@@ -1,29 +1,33 @@
 ﻿
+using HospitalManagmentSystem.Data.Models;
+using HospitalManagmentSystem.Database.Models;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
+using Microsoft.EntityFrameworkCore.Update.Internal;
+using System.Data;
+using System.Linq.Expressions;
+
 namespace HospitalManagmentSystem.Services
 {
     class ConsoleMenuBuilderFactory : IMenuBuilderFactory
     {
-        public ConsoleMenuBuilderFactory(ConfigService config, IHasherService hasher)
+        public ConsoleMenuBuilderFactory(IHasherService hasher)
         {
-            _config = config;
             _hasher = hasher;
         }
 
         public IInitialMenuBuilder GetBuilder()
         {
-            return new ConsoleMenuBuilder(_config, _hasher);
+            return new ConsoleMenuBuilder(_hasher);
         }
 
         // TODO: work out how to not have to keep adding twice
-        ConfigService _config;
         IHasherService _hasher;
     }
 
     internal class ConsoleMenuBuilder : IInitialMenuBuilder, IOpenMenuBuilder, IOptionsMenuBuilder
     {
-        public ConsoleMenuBuilder(ConfigService config, IHasherService hasher)
+        public ConsoleMenuBuilder(IHasherService hasher)
         {
-            _config = config;
             _hasher = hasher;
         }
 
@@ -55,9 +59,44 @@ namespace HospitalManagmentSystem.Services
 
         int CharToInt(char ch) => ch - '0';
 
-        public IOpenMenuBuilder Table(object table)
+        public IOpenMenuBuilder Table<T>(IEnumerable<T> rows, IEnumerable<(string ColumnName, Expression<Func<T, string>> ColumnValueGetter)> columnsAndGetters)
         {
-            throw new NotImplementedException();
+            var table = GetTableOfString(rows, columnsAndGetters);
+
+            var totalColumnWidth = Console.WindowWidth - columnsAndGetters.Count() - 1;
+            var columnWidths = GetColumnWidths(table, columnsAndGetters.Select(t => t.ColumnName));
+
+            return this;
+        }
+
+        string[,] GetTableOfString<T>(IEnumerable<T> rows, IEnumerable<(string ColumnName, Expression<Func<T, string>> ColumnValueGetter)> columnsAndGetters)
+        {
+            var columnFuncs = columnsAndGetters.Select(tuple => tuple.ColumnValueGetter.Compile());
+            string[,] table = new string[rows.Count(), columnsAndGetters.Count()];
+
+            int rowIndex = 0;
+            foreach (var row in rows)
+            {
+                int columnIndex = 0;
+                foreach (var columnFunc in columnFuncs)
+                {
+                    var columnString = columnFunc(row);
+
+                    table[rowIndex, columnIndex] = columnString;
+
+                    columnIndex++;
+                }
+                rowIndex++;
+            }
+
+            return table;
+        }
+
+        int[] GetColumnWidths(string[,] stringTable, IEnumerable<string> columnNames)
+        {
+            int[] columnSizes = new int[columnNames.Count()];
+                    //columnSizes[columnIndex] = Math.Max(columnSizes[columnIndex], columnString.Length);
+            return columnSizes;
         }
 
         public IOpenMenuBuilder Text(string text)
@@ -68,14 +107,14 @@ namespace HospitalManagmentSystem.Services
 
         public IOpenMenuBuilder Title(string heading)
         {
-            return Title(_config.ApplcationName, heading);
+            return Title(Constants.ApplcationName, heading);
         }
 
         public IOpenMenuBuilder Title(string title, string heading)
         {
             int minPadding = 3;
             int boxWidth = Math.Max(title.Length, heading.Length) + minPadding * 2;
-
+            Console.Clear();
             Console.WriteLine($"┌{new string('─', boxWidth)}┐");
             Console.WriteLine($"│{CenterPadToWidth(boxWidth, title)}│");
             Console.WriteLine($"├{new string('-', boxWidth)}┤");
@@ -140,15 +179,20 @@ namespace HospitalManagmentSystem.Services
                 else if (key.Key == ConsoleKey.Enter)
                 {
                     Console.WriteLine();
-                    var hashed = _hasher.HashPassword(new string(pass.ToArray()));
+                    var hashed = _hasher.HashPassword(new string(pass.Reverse().ToArray()));
                     recievePromptvalue(hashed);
                     return this;
                 }
             }
         }
 
+        public IOpenMenuBuilder WaitForInput()
+        {
+            Console.ReadLine();
+            return this;
+        }
+
         Dictionary<int, IMenu> _optionsMapping = [];
-        ConfigService _config;
         IHasherService _hasher;
     }
 }

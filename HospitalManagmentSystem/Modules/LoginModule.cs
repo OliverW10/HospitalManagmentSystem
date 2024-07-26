@@ -1,19 +1,18 @@
-﻿using HospitalManagmentSystem.Data.Repositories;
+﻿using HospitalManagmentSystem.Data;
+using HospitalManagmentSystem.Data.Repositories;
 using HospitalManagmentSystem.Database.Models;
 using HospitalManagmentSystem.Services;
 
 namespace HospitalManagmentSystem.Controllers
 {
-    internal class LoginMenu
+    internal class LoginModule
     {
-
-        public LoginMenu(IMenuBuilderFactory menuFactory, IRepository<UserModel> userRepo, PatientMenu patientController, AdminMenu adminController, DoctorMenu doctorController)
+        public LoginModule(IMenuBuilderFactory menuFactory, IRepository<UserModel> userRepo, IUnitOfWork unitOfWork, IModuleLocator moduleFactory)
         {
             _menuFactory = menuFactory;
-            _patientController = patientController;
-            _adminController = adminController;
-            _doctorController = doctorController;
-            _users= userRepo;
+            _moduleFactory = moduleFactory;
+            _users = userRepo;
+            _uow = unitOfWork;
         }
 
         public IMenu? GetLoginMenu()
@@ -33,13 +32,14 @@ namespace HospitalManagmentSystem.Controllers
                     switch (user.Discriminator)
                     {
                         case UserType.Admin:
+                            var admin = _uow.AdminRepository.Find(a => a.Id == loginId).First();
                             return null;
                         case UserType.Doctor:
+                            var doctor = _uow.DoctorRepository.Find(d => d.Id == loginId).First();
                             return null;
                         case UserType.Patient:
-                            return _patientController.PatientMainMenu;
-                        default:
-                            throw new NotImplementedException();
+                            var patient = _uow.PatientRepository.Find(p => p.Id == loginId).First();
+                            return () => _moduleFactory.GetPatientModule(patient);
                     }
                 }
                 menu.Text("No matching account. Try again.");
@@ -58,11 +58,14 @@ namespace HospitalManagmentSystem.Controllers
             Thread.Sleep(1000);
         }
 
+        public IMenu? MainMenu()
+        {
+            throw new NotImplementedException();
+        }
 
         IMenuBuilderFactory _menuFactory;
+        IModuleLocator _moduleFactory;
+        IUnitOfWork _uow;
         IRepository<UserModel> _users;
-        PatientMenu _patientController;
-        AdminMenu _adminController;
-        DoctorMenu _doctorController;
     }
 }

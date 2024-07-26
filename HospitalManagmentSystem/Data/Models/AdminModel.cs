@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HospitalManagmentSystem.Database.Models
 {
-    public class AdminModel : IDbModel
+    public class AdminModel : IDbUserModel
     {
         [Key]
         [ForeignKey(nameof(User))]

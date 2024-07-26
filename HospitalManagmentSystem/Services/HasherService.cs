@@ -7,7 +7,8 @@ namespace HospitalManagmentSystem.Services
     {
         public byte[] HashPassword(string password)
         {
-            return SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(password));
+            // TODO salt
+            return Encoding.UTF8.GetBytes(password); // SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(password));
         }
     }
 }

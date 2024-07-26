@@ -1,4 +1,8 @@
-﻿namespace HospitalManagmentSystem.Services
+﻿using HospitalManagmentSystem.Data.Models;
+using HospitalManagmentSystem.Database.Models;
+using System.Linq.Expressions;
+
+namespace HospitalManagmentSystem.Services
 {
     // The below interfaces express a 'fluent' API for constructing a menu
     // Allows for builder-like usage while using the type system to restrict unwanted behaviour (e.g. a title box after a prompt)
@@ -11,8 +15,9 @@
     interface IOpenMenuBuilder : IPromptMenuBuilder
     {
         new IOpenMenuBuilder Text(string text);
-        IOpenMenuBuilder Table(object table);
+        IOpenMenuBuilder Table<T>(IEnumerable<T> rows, Dictionary<string, Expression<Func<T, string>>> columnsNameToProperty);
         IOptionsMenuBuilder StartOptions();
+        IOpenMenuBuilder WaitForInput();
     }
 
     interface IOptionsMenuBuilder
@@ -31,6 +36,5 @@
         IOpenMenuBuilder Text(string text);
     }
 
-    // I?
-    internal delegate IMenu? IMenu(AppState state);
+    internal delegate IMenu? IMenu();
 }
