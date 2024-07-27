@@ -25,12 +25,12 @@ namespace HospitalManagmentSystem.Controllers
                 .Text($"Welcome to {Constants.ApplcationName}\n")
                 .Text("Please choose an option:")
                 .StartOptions()
-                .Option(1, "List patient details", () => PatientDetailsMenu(loggedInUser))
-                .Option(2, "List my doctor details", () => DoctorDetailsMenu(loggedInUser))
-                .Option(3, "List all appointments", () => ListAppointmentsMenu(loggedInUser))
-                .Option(4, "Book appointment", () => BookAppointmentMenu(loggedInUser))
-                .Option(5, "Exit to login", _moduleFactory.GetLoginModule())
-                .Option(6, "Exit System", () => null)
+                .Option("List patient details", () => PatientDetailsMenu(loggedInUser))
+                .Option("List my doctor details", () => DoctorDetailsMenu(loggedInUser))
+                .Option("List all appointments", () => ListAppointmentsMenu(loggedInUser))
+                .Option("Book appointment", () => BookAppointmentMenu(loggedInUser))
+                .Option("Exit to login", _moduleFactory.GetLoginModule())
+                .Option("Exit System", () => null)
                 .GetOptionResult();
         }
 

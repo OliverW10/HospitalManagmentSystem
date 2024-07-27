@@ -13,12 +13,15 @@ namespace HospitalManagmentSystem.Services
         IOpenMenuBuilder Title(string heading);
     }
 
-    interface IOpenMenuBuilder : IPromptMenuBuilder
+    interface IOpenMenuBuilder
     {
-        new IOpenMenuBuilder Text(string text);
+        IOpenMenuBuilder Text(string text);
         IOpenMenuBuilder Table<T>(IEnumerable<T> rows, TableColumns<T> columns);
         IOptionsMenuBuilder StartOptions();
         IOpenMenuBuilder WaitForInput();
+        IOpenMenuBuilder PromptForText(string promptText, Predicate<string> validate, Action<string> recievePromptvalue);
+        IOpenMenuBuilder PromptForNumber(string promptText, Predicate<int> validate, Action<int> recievePromptvalue);
+        IOpenMenuBuilder PromptForPassword(string promptText, Predicate<string> validate, Action<byte[]> recievePromptvalue);
     }
 
     struct TableColumns<T> : IEnumerable<string>
@@ -43,18 +46,8 @@ namespace HospitalManagmentSystem.Services
 
     interface IOptionsMenuBuilder
     {
-        IOptionsMenuBuilder Option(int num, string optionDescription, IMenu getNextMenu);
+        IOptionsMenuBuilder Option(string optionDescription, IMenu getNextMenu);
         IMenu GetOptionResult();
-    }
-
-
-    interface IPromptMenuBuilder
-    {
-        // TODO: can use generic here?
-        IPromptMenuBuilder PromptForText(string promptText, Predicate<string> validate, Action<string> recievePromptvalue);
-        IPromptMenuBuilder PromptForNumber(string promptText, Predicate<int> validate, Action<int> recievePromptvalue);
-        IPromptMenuBuilder PromptForPassword(string promptText, Predicate<string> validate, Action<byte[]> recievePromptvalue);
-        IOpenMenuBuilder Text(string text);
     }
 
     internal delegate IMenu? IMenu();

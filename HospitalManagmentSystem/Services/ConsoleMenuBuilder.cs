@@ -22,8 +22,9 @@ namespace HospitalManagmentSystem.Services
             return this;
         }
 
-        public IOptionsMenuBuilder Option(int num, string optionDescription, IMenu getNextMenu)
+        public IOptionsMenuBuilder Option(string optionDescription, IMenu getNextMenu)
         {
+            var num = 1 + _optionsMapping.Count;
             Console.WriteLine($"{num}) {optionDescription}");
             _optionsMapping.Add(num, getNextMenu);
             return this;
@@ -172,5 +173,6 @@ namespace HospitalManagmentSystem.Services
         Dictionary<int, IMenu> _optionsMapping = [];
         IHasherService _hasher;
         TableLayoutService _tableLayout;
+        int _optionNum = 0;
     }
 }
