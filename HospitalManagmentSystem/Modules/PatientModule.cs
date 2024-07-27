@@ -104,13 +104,18 @@ namespace HospitalManagmentSystem.Controllers
                 return () => SelectDoctorMenu(patient);
             }
 
+            string description = "";
+
             var menu = _menuFactory
-                .Title("Book Appointment");
+                .Title("Book Appointment")
+                .Text($"You are booking an appointment with: {patient.Doctor.User.Name}")
+                .PromptForText("Description of appointment: ", _ => true, entered => description = entered);
 
-            if (patient.Doctor == null)
-            {
+            _uow.AppointmentRepository.Add(new AppointmentModel { Description = description, Doctor = patient.Doctor, Patient = patient });
+            _uow.SaveChanges();
 
-            }
+            menu.Text("Your appointment has been booked successfully")
+                .WaitForInput();
 
             return () => GetPatientMainMenu(patient);
         }

@@ -99,10 +99,11 @@ namespace HospitalManagmentSystem.Services
             return $"{paddingLeft}{text}{paddingRight}";
         }
 
-        public IPromptMenuBuilder PromptForText(string promptText, Func<string, bool> validate, Action<string> recievePromptvalue)
+        public IPromptMenuBuilder PromptForText(string promptText, Predicate<string> validate, Action<string> recievePromptvalue)
         {
             while (true)
             {
+                Console.Write(promptText);
                 var entered = Console.ReadLine();
                 if (entered != null && validate(entered))
                 {
@@ -112,7 +113,7 @@ namespace HospitalManagmentSystem.Services
             }
         }
 
-        public IPromptMenuBuilder PromptForNumber(string promptText, Func<int, bool> validate, Action<int> recievePromptvalue)
+        public IPromptMenuBuilder PromptForNumber(string promptText, Predicate<int> validate, Action<int> recievePromptvalue)
         {
             while (true)
             {
@@ -126,29 +127,38 @@ namespace HospitalManagmentSystem.Services
             }
         }
 
-        public IPromptMenuBuilder PromptForPassword(string promptText, Func<byte[], bool> validate, Action<byte[]> recievePromptvalue)
+        public IPromptMenuBuilder PromptForPassword(string promptText, Predicate<string> validate, Action<byte[]> recievePromptvalue)
         {
-            var pass = new Stack<char>();
+            var passwordStack = new Stack<char>();
             Console.Write(promptText);
             while (true)
             {
                 var key = Console.ReadKey(intercept: true);
-                if (key.Key == ConsoleKey.Backspace && pass.Count > 0)
+                if (key.Key == ConsoleKey.Backspace && passwordStack.Count > 0)
                 {
                     Console.Write("\b \b");
-                    pass.Pop();
+                    passwordStack.Pop();
                 }
                 else if (!char.IsControl(key.KeyChar))
                 {
                     Console.Write("*");
-                    pass.Push(key.KeyChar);
+                    passwordStack.Push(key.KeyChar);
                 }
                 else if (key.Key == ConsoleKey.Enter)
                 {
                     Console.WriteLine();
-                    var hashed = _hasher.HashPassword(new string(pass.Reverse().ToArray()));
-                    recievePromptvalue(hashed);
-                    return this;
+                    var password = new string(passwordStack.Reverse().ToArray());
+                    if (validate(password))
+                    {
+                        var hashed = _hasher.HashPassword(password);
+                        recievePromptvalue(hashed);
+                        return this;
+                    }
+                    else
+                    {
+                        passwordStack.Clear();
+                        Console.Write(promptText);
+                    }
                 }
             }
         }

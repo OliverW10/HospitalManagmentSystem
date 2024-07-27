@@ -34,13 +34,13 @@ namespace HospitalManagmentSystem
                 .AddSingleton<Random>(Random.Shared)
                 .BuildServiceProvider();
 
-            //if (args.Any(arg => arg == "seed"))
-            //{
-            //Console.WriteLine("Starting Seeding database");
-            //var seeder = services.GetRequiredService<Seeder>();
-            //seeder.Seed();
-            //Console.WriteLine("Finished Seeding database");
-            //}
+            if (args.Any(arg => arg == "seed"))
+            {
+                Console.WriteLine("Starting Seeding database");
+                var seeder = services.GetRequiredService<Seeder>();
+                seeder.Seed();
+                Console.WriteLine("Finished Seeding database");
+            }
 
             //var emailer = services.GetRequiredService<IMessageService>();
             //emailer.Send("oliver.warrick2@gmail.com", "this is the contents of my email test test test");

@@ -51,9 +51,9 @@ namespace HospitalManagmentSystem.Services
     interface IPromptMenuBuilder
     {
         // TODO: can use generic here?
-        IPromptMenuBuilder PromptForText(string promptText, Func<string, bool> validate, Action<string> recievePromptvalue);
-        IPromptMenuBuilder PromptForNumber(string promptText, Func<int, bool> validate, Action<int> recievePromptvalue);
-        IPromptMenuBuilder PromptForPassword(string promptText, Func<byte[], bool> validate, Action<byte[]> recievePromptvalue);
+        IPromptMenuBuilder PromptForText(string promptText, Predicate<string> validate, Action<string> recievePromptvalue);
+        IPromptMenuBuilder PromptForNumber(string promptText, Predicate<int> validate, Action<int> recievePromptvalue);
+        IPromptMenuBuilder PromptForPassword(string promptText, Predicate<string> validate, Action<byte[]> recievePromptvalue);
         IOpenMenuBuilder Text(string text);
     }
 

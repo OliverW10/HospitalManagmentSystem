@@ -1,4 +1,5 @@
 ﻿using HospitalManagmentSystem.Data;
+using HospitalManagmentSystem.Data.Models;
 using HospitalManagmentSystem.Data.Repositories;
 using HospitalManagmentSystem.Database.Models;
 
@@ -15,6 +16,13 @@ namespace HospitalManagmentSystem.Services
 
         public void Seed(int numOfEach = 10)
         {
+            DeleteAll(_uow.AppointmentRepository);
+            DeleteAll(_uow.AdminRepository);
+            DeleteAll(_uow.PatientRepository);
+            DeleteAll(_uow.DoctorRepository);
+
+            _uow.SaveChanges();
+
             for (int i = 0; i < numOfEach; i++)
             {
                 AddAdmin();
@@ -32,6 +40,14 @@ namespace HospitalManagmentSystem.Services
             }
 
             _uow.SaveChanges();
+        }
+
+        void DeleteAll<T>(IRepository<T> repo) where T : IDbModel
+        {
+            foreach (var val in repo.GetAll())
+            {
+                repo.Remove(val);
+            }
         }
 
         string FirstName => FirstNames[_rand.Next(FirstNames.Length)];
