@@ -7,7 +7,7 @@ namespace HospitalManagmentSystem.Controllers
 {
     internal class LoginModule
     {
-        public LoginModule(IMenuBuilderFactory menuFactory, IRepository<UserModel> userRepo, IUnitOfWork unitOfWork, IModuleLocator moduleFactory)
+        public LoginModule(IMenuBuilder menuFactory, IRepository<UserModel> userRepo, IUnitOfWork unitOfWork, IModuleLocator moduleFactory)
         {
             _menuFactory = menuFactory;
             _moduleFactory = moduleFactory;
@@ -19,7 +19,7 @@ namespace HospitalManagmentSystem.Controllers
         {
             int? loginId = null;
             byte[]? loginHashedPassword = null;
-            var menu = _menuFactory.GetBuilder()
+            var menu = _menuFactory
                 .Title("Login");
             while (true)
             {
@@ -55,7 +55,7 @@ namespace HospitalManagmentSystem.Controllers
         {
             menu.Text("Valid Credentials");
             // Delay to allow 'Valid Credentials' to be read
-            Thread.Sleep(1000);
+            //Thread.Sleep(1000);
         }
 
         public IMenu? MainMenu()
@@ -63,7 +63,7 @@ namespace HospitalManagmentSystem.Controllers
             throw new NotImplementedException();
         }
 
-        IMenuBuilderFactory _menuFactory;
+        IMenuBuilder _menuFactory;
         IModuleLocator _moduleFactory;
         IUnitOfWork _uow;
         IRepository<UserModel> _users;

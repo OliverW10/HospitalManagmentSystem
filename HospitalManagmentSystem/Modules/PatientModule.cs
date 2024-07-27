@@ -2,13 +2,15 @@
 using HospitalManagmentSystem.Data.Repositories;
 using HospitalManagmentSystem.Database.Models;
 using HospitalManagmentSystem.Services;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using System.Linq.Expressions;
 
 namespace HospitalManagmentSystem.Controllers
 {
     internal class PatientModule
     {
-        public PatientModule(IMenuBuilderFactory menuFactory, IModuleLocator moduleFactory, IRepository<DoctorModel> doctorsRepo, IUnitOfWork uow)
+        public PatientModule(IMenuBuilder menuFactory, IModuleLocator moduleFactory, IRepository<DoctorModel> doctorsRepo, IUnitOfWork uow)
         {
             _menuFactory = menuFactory;
             _moduleFactory = moduleFactory;
@@ -18,7 +20,7 @@ namespace HospitalManagmentSystem.Controllers
 
         public IMenu? GetPatientMainMenu(PatientModel loggedInUser)
         {
-            return _menuFactory.GetBuilder()
+            return _menuFactory
                 .Title("Patient Menu")
                 .Text($"Welcome to {Constants.ApplcationName}\n")
                 .Text("Please choose an option:")
@@ -36,7 +38,7 @@ namespace HospitalManagmentSystem.Controllers
         {
             var user = loggedInUser.User;
 
-            _menuFactory.GetBuilder()
+            _menuFactory
                 .Title("My Details")
                 .Text($"\n{user.Name}'s Details\n")
                 .Text($"Patient ID: {user.Id}")
@@ -53,11 +55,11 @@ namespace HospitalManagmentSystem.Controllers
         {
             var doctor = loggedInUser.Doctor;
 
-            var menu = _menuFactory.GetBuilder()
+            var menu = _menuFactory
                 .Title("My Doctor");
             if (doctor != null)
             {
-                var tableColumns = new Dictionary<string, Expression<Func<DoctorModel, string>>>()
+                var tableColumns = new TableColumns<DoctorModel>()
                 {
                     { "Id", doc => doc.Id.ToString() },
                     { "Full Name", doc => doc.User.Name },
@@ -80,10 +82,16 @@ namespace HospitalManagmentSystem.Controllers
 
         IMenu? ListAppointmentsMenu(PatientModel patient)
         {
-            _menuFactory.GetBuilder()
+            var tableColumns = new TableColumns<AppointmentModel>()
+            {
+                { "Id", p => p.Id.ToString() },
+                { "Doctor Name", p => p.Doctor.User.Name },
+                { "Description", p => p.Description },
+            };
+            _menuFactory
                 .Title("My Appointments")
                 .Text($"Appointments for {patient.User.Name}\n")
-                .Table(patient.Appointments, new[] { nameof(AppointmentModel.Id), nameof(AppointmentModel.Patient.User.Name)})
+                .Table(patient.Appointments, tableColumns)
                 .WaitForInput();
 
             return () => GetPatientMainMenu(patient);
@@ -96,7 +104,7 @@ namespace HospitalManagmentSystem.Controllers
                 return () => SelectDoctorMenu(patient);
             }
 
-            var menu = _menuFactory.GetBuilder()
+            var menu = _menuFactory
                 .Title("Book Appointment");
 
             if (patient.Doctor == null)
@@ -109,7 +117,7 @@ namespace HospitalManagmentSystem.Controllers
 
         IMenu? SelectDoctorMenu(PatientModel patient)
         {
-            var options = _menuFactory.GetBuilder()
+            var options = _menuFactory
                 .Title("Book Appointment")
                 .Text("You are not registered with any doctor! Please choose which doctor you would like to register with.")
                 .StartOptions();
@@ -131,7 +139,7 @@ namespace HospitalManagmentSystem.Controllers
             return BookAppointmentMenu(patient);
         }
 
-        IMenuBuilderFactory _menuFactory;
+        IMenuBuilder _menuFactory;
         IModuleLocator _moduleFactory;
         IRepository<DoctorModel> _doctorRepo;
         IUnitOfWork _uow;

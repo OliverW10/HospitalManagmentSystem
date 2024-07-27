@@ -8,27 +8,12 @@ using System.Linq.Expressions;
 
 namespace HospitalManagmentSystem.Services
 {
-    class ConsoleMenuBuilderFactory : IMenuBuilderFactory
+    internal class ConsoleMenuBuilder : IMenuBuilder, IOpenMenuBuilder, IOptionsMenuBuilder
     {
-        public ConsoleMenuBuilderFactory(IHasherService hasher)
+        public ConsoleMenuBuilder(IHasherService hasher, TableLayoutService tableLayout)
         {
             _hasher = hasher;
-        }
-
-        public IInitialMenuBuilder GetBuilder()
-        {
-            return new ConsoleMenuBuilder(_hasher);
-        }
-
-        // TODO: work out how to not have to keep adding twice
-        IHasherService _hasher;
-    }
-
-    internal class ConsoleMenuBuilder : IInitialMenuBuilder, IOpenMenuBuilder, IOptionsMenuBuilder
-    {
-        public ConsoleMenuBuilder(IHasherService hasher)
-        {
-            _hasher = hasher;
+            _tableLayout = tableLayout;
         }
 
         public IOptionsMenuBuilder StartOptions()
@@ -59,45 +44,27 @@ namespace HospitalManagmentSystem.Services
 
         int CharToInt(char ch) => ch - '0';
 
-        public IOpenMenuBuilder Table<T>(IEnumerable<T> rows, IEnumerable<(string ColumnName, Expression<Func<T, string>> ColumnValueGetter)> columnsAndGetters)
+        public IOpenMenuBuilder Table<T>(IEnumerable<T> rows, TableColumns<T> columns)
         {
-            var table = GetTableOfString(rows, columnsAndGetters);
+            var table = _tableLayout.GetTableOfString(rows, columns);
 
-            var totalColumnWidth = Console.WindowWidth - columnsAndGetters.Count() - 1;
-            var columnWidths = GetColumnWidths(table, columnsAndGetters.Select(t => t.ColumnName));
+            var numSeperators = columns.Count() - 1;
+            var widthBudget = Console.WindowWidth - numSeperators;
+            var columnWidths = _tableLayout.GetColumnWidths(table, columns.Names, widthBudget);
+
+
+
+            Console.WriteLine(string.Join("|", columns.Names.Zip(columnWidths).Select(t => _tableLayout.RightPadToWidth(t.First, t.Second))));
+            Console.WriteLine(new string('-', Console.WindowWidth));
+
+            foreach (var row in table)
+            {
+                Console.WriteLine(string.Join("|", row.Zip(columnWidths).Select(t => _tableLayout.RightPadToWidth(t.First, t.Second))));
+            }
 
             return this;
         }
-
-        string[,] GetTableOfString<T>(IEnumerable<T> rows, IEnumerable<(string ColumnName, Expression<Func<T, string>> ColumnValueGetter)> columnsAndGetters)
-        {
-            var columnFuncs = columnsAndGetters.Select(tuple => tuple.ColumnValueGetter.Compile());
-            string[,] table = new string[rows.Count(), columnsAndGetters.Count()];
-
-            int rowIndex = 0;
-            foreach (var row in rows)
-            {
-                int columnIndex = 0;
-                foreach (var columnFunc in columnFuncs)
-                {
-                    var columnString = columnFunc(row);
-
-                    table[rowIndex, columnIndex] = columnString;
-
-                    columnIndex++;
-                }
-                rowIndex++;
-            }
-
-            return table;
-        }
-
-        int[] GetColumnWidths(string[,] stringTable, IEnumerable<string> columnNames)
-        {
-            int[] columnSizes = new int[columnNames.Count()];
-                    //columnSizes[columnIndex] = Math.Max(columnSizes[columnIndex], columnString.Length);
-            return columnSizes;
-        }
+        
 
         public IOpenMenuBuilder Text(string text)
         {
@@ -194,5 +161,6 @@ namespace HospitalManagmentSystem.Services
 
         Dictionary<int, IMenu> _optionsMapping = [];
         IHasherService _hasher;
+        TableLayoutService _tableLayout;
     }
 }

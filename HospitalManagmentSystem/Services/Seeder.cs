@@ -45,6 +45,7 @@ namespace HospitalManagmentSystem.Services
         string Address => $"{StreetNum} {Street}, {City}";
         byte[] Password => _hasher.HashPassword("asdf");
         string Phone => string.Join("", Enumerable.Range(0, 8).Select(i => _rand.Next(10)));
+        string Description => AppointmentDescriptions[_rand.Next(AppointmentDescriptions.Length)];
 
         UserModel GetUser()
         {
@@ -83,7 +84,7 @@ namespace HospitalManagmentSystem.Services
         {
             var doctor = _uow.DoctorRepository.GetRandom(_rand);
             var patient = _uow.PatientRepository.GetRandom(_rand);
-            _uow.AppointmentRepository.Add(new AppointmentModel { Doctor = doctor, Patient = patient });
+            _uow.AppointmentRepository.Add(new AppointmentModel { Doctor = doctor, Patient = patient, Description = Description });
         }
 
         string[] FirstNames => new[] { "Normand", "Stan", "Irma", "Pierre", "Erick" };
@@ -91,6 +92,7 @@ namespace HospitalManagmentSystem.Services
         string[] Streets => new[] { "Oak Way", "Marion Drive", "Boggess Street", "Pearlman Avenue", "Creekside Lane" };
         string[] Cities => new[] { "Cleveland", "San Luis Obispo", "Pensacola", "Weekiwachee Spgs.", "Marshalltown" };
         string[] EmailDomains => new[] { "mailing.com", "internet.net", "fakemail.gov.au", "pmail.com", "waaaa.io" };
+        string[] AppointmentDescriptions => new[] { "sick", "unwell", "poorly", "ill", "disease ridden", "ailed" };
 
         IUnitOfWork _uow;
         IHasherService _hasher;
