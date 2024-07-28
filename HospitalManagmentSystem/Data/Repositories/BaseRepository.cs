@@ -12,6 +12,7 @@ namespace HospitalManagmentSystem.Data.Repositories
 
         protected HospitalContext _context;
 
+        // Add is virtual to allow child repositories to add additional logic, e.g. user wrappers ensure the discriminator is correct
         public virtual void Add(T entity)
         {
             _context.Set<T>().Add(entity);

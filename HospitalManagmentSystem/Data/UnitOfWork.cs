@@ -8,20 +8,20 @@ namespace HospitalManagmentSystem.Data
     {
         public UnitOfWork(HospitalContext context)
         {
-            Context = context;
+            _internalContext = context;
         }
 
-        IRepository<AdminModel> IUnitOfWork.AdminRepository => new AdminRepository(Context);
-        IRepository<AppointmentModel> IUnitOfWork.AppointmentRepository => new AppointmentRepository(Context);
-        IRepository<DoctorModel> IUnitOfWork.DoctorRepository => new DoctorRepository(Context);
-        IRepository<PatientModel> IUnitOfWork.PatientRepository => new PatientRepository(Context);
+        IRepository<AdminModel> IUnitOfWork.AdminRepository => new AdminRepository(_internalContext);
+        IRepository<AppointmentModel> IUnitOfWork.AppointmentRepository => new AppointmentRepository(_internalContext);
+        IRepository<DoctorModel> IUnitOfWork.DoctorRepository => new DoctorRepository(_internalContext);
+        IRepository<PatientModel> IUnitOfWork.PatientRepository => new PatientRepository(_internalContext);
 
         public int SaveChanges()
         {
-            return Context.SaveChanges();
+            return _internalContext.SaveChanges();
         }
 
-        HospitalContext Context { get; }
+        HospitalContext _internalContext { get; }
 
     }
 }

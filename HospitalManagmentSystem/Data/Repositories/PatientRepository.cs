@@ -13,7 +13,9 @@ namespace HospitalManagmentSystem.Data.Repositories
             return _context.Patients
                 .Include(p => p.User)
                 .Include(p => p.Doctor)
-                .ThenInclude(d => d!.User) // Nullable warning can be ignored because it is interpretred into an sql query with a join instead of in the clr
+                // Nullable warning can be ignored in this case because the relevant deference is part of an Expresstion<> which is
+                // interpretred into an sql query that uses a join, rather than being executed in the clr as normal, so there is no risk of a null dereference
+                .ThenInclude(d => d!.User)
                 .OrderBy(m => m.Id);
         }
 

@@ -9,6 +9,7 @@ namespace HospitalManagmentSystem.Database
         void Configure(DbContextOptionsBuilder options);
     }
 
+    // Configues the DbContext to use a Sqlite3 file database
     internal class SQLiteContextConfigurator : IDbContextConfigurator
     {
         string DbPath { get; }
@@ -26,7 +27,8 @@ namespace HospitalManagmentSystem.Database
         }
     }
 
-    internal class LocalSqlServerConfigurator : IDbContextConfigurator//, IDesignTimeDbContextFactory<HospitalContext>
+    // Configues the DbContext to use a local Microsoft Sql Server instance
+    internal class LocalSqlServerConfigurator : IDbContextConfigurator
     {
         string _hostname { get; }
         string _dbName { get; }
@@ -55,6 +57,7 @@ namespace HospitalManagmentSystem.Database
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
             _contextProvider.Configure(options);
+            // Logs the executed sql queries to the Output>Build tab in visual studio
             options.LogTo(message => Debug.WriteLine(message));
         }
 
