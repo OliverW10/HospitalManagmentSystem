@@ -4,9 +4,9 @@ namespace HospitalManagmentSystem.Services.Interfaces
 {
     internal interface IModuleLocator
     {
-        IMenu GetLoginModule();
-        IMenu GetDoctorModule(DoctorModel user);
-        IMenu GetPatientModule(PatientModel user);
-        IMenu GetAdminModule(AdminModel user);
+        Menu GetLoginModule();
+        Menu GetDoctorModule(DoctorModel user);
+        Menu GetPatientModule(PatientModel user);
+        Menu GetAdminModule(AdminModel user);
     }
 }

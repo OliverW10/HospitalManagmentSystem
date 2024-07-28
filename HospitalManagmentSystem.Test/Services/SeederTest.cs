@@ -1,16 +1,9 @@
 ﻿using HospitalManagmentSystem.Data;
-using HospitalManagmentSystem.Data.Models;
 using HospitalManagmentSystem.Data.Repositories;
 using HospitalManagmentSystem.Database.Models;
-using HospitalManagmentSystem.Services;
 using HospitalManagmentSystem.Services.Implementations;
 using HospitalManagmentSystem.Services.Interfaces;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace HospitalManagmentSystem.Test.Services
 {

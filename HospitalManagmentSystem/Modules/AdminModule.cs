@@ -1,6 +1,7 @@
-﻿using HospitalManagmentSystem.Data.Repositories;
-using HospitalManagmentSystem.Data;
+﻿using HospitalManagmentSystem.Data;
+using HospitalManagmentSystem.Data.Repositories;
 using HospitalManagmentSystem.Database.Models;
+using HospitalManagmentSystem.Services.Implementations;
 using HospitalManagmentSystem.Services.Interfaces;
 
 namespace HospitalManagmentSystem.Controllers
@@ -14,7 +15,7 @@ namespace HospitalManagmentSystem.Controllers
             _uow = uow;
         }
 
-        public IMenu? GetAdminMainMenu(AdminModel loggedInUser)
+        public Menu? GetAdminMainMenu(AdminModel loggedInUser)
         {
             return _menuFactory
                 .Title("Doctor Menu")
@@ -33,7 +34,7 @@ namespace HospitalManagmentSystem.Controllers
                 .GetOptionResult();
         }
 
-        IMenu? ListAllDoctorsMenu(AdminModel loggedInUser)
+        Menu? ListAllDoctorsMenu(AdminModel loggedInUser)
         {
             var tableColumns = new TableColumns<DoctorModel>()
             {
@@ -49,12 +50,12 @@ namespace HospitalManagmentSystem.Controllers
             return () => GetAdminMainMenu(loggedInUser);
         }
 
-        IMenu? CheckDoctorDetails(AdminModel loggedInUser)
+        Menu? CheckDoctorDetails(AdminModel loggedInUser)
         {
             int enteredId = 0;
             Predicate<int> isIdValid = id => _uow.DoctorRepository.Find(d => d.Id == id).Any() || id == -1;
             var menu = _menuFactory.Title("Doctor Details")
-                .PromptForNumber("Please enter the ID of the doctor whos details you are checking, or -1 to return to the main menu: ", isIdValid, id => enteredId = id);
+                .PromptForNumber("Please enter the ID of the doctor whos details you are checking, or -1 to return to the main menu: ", id => enteredId = id, validate: isIdValid);
 
             if (enteredId == -1)
             {
@@ -79,7 +80,7 @@ namespace HospitalManagmentSystem.Controllers
             return () => GetAdminMainMenu(loggedInUser);
         }
 
-        IMenu? ListAllPatientsMenu(AdminModel loggedInUser)
+        Menu? ListAllPatientsMenu(AdminModel loggedInUser)
         {
             var tableColumns = new TableColumns<PatientModel>()
             {
@@ -95,12 +96,12 @@ namespace HospitalManagmentSystem.Controllers
             return () => GetAdminMainMenu(loggedInUser);
         }
 
-        IMenu? CheckPatientDetails(AdminModel loggedInUser)
+        Menu? CheckPatientDetails(AdminModel loggedInUser)
         {
             int enteredId = 0;
             Predicate<int> isIdValid = id => _uow.PatientRepository.Find(d => d.Id == id).Any() || id == -1;
             var menu = _menuFactory.Title("Patient Details")
-                .PromptForNumber("Please enter the ID of the patient whos details you are checking, or -1 to return to the main menu: ", isIdValid, id => enteredId = id);
+                .PromptForNumber("Please enter the ID of the patient whos details you are checking, or -1 to return to the main menu: ", id => enteredId = id, validate: isIdValid);
 
             if (enteredId == -1)
             {
@@ -125,62 +126,41 @@ namespace HospitalManagmentSystem.Controllers
             return () => GetAdminMainMenu(loggedInUser);
         }
 
-        IMenu? AddDoctorMenu(AdminModel loggedInUser)
-        {
-            var name = "";
-            var email = "";
-            var phone = "";
-            var address = "";
-            byte[] password = { };
-            var menu = _menuFactory.Title("Add Patient")
-                .Text($"Registering a new patient with the {Constants.ApplcationName}")
-                // TODO: overload without validation (extension method?)
-                .PromptForText("First Name: ", x => true, firstName => name += firstName)
-                .PromptForText("Last Name: ", x => true, lastName => name += " " + lastName)
-                .PromptForText("Email: ", x => x.Contains("@") && x.Contains("."), x => email = x)
-                .PromptForText("Phone: ", x => x.All(c => char.IsDigit(c) || char.IsWhiteSpace(c) || c == '+'), p => phone = p)
-                .PromptForNumber("Street Number: ", x => x > 0, n => address += n.ToString())
-                .PromptForText("Street: ", x => true, s => address += " " + s)
-                .PromptForText("City: ", x => true, c => address += " " + c)
-                .PromptForText("State: ", x => true, s => address += ", " + s)
-                .PromptForPassword("Password: ", x => true, p => password = p);
+        Menu? AddDoctorMenu(AdminModel loggedInUser) => AddUserMenu(loggedInUser, "Doctor", (user) => _uow.DoctorRepository.Add(new DoctorModel { User = user }));
 
-            var user = new UserModel { Address = address, Email = email, Phone = phone, Name = name, Password = password, Discriminator = UserType.Doctor };
-            _uow.DoctorRepository.Add(new DoctorModel { User = user });
+        Menu? AddPatientMenu(AdminModel loggedInUser) => AddUserMenu(loggedInUser, "Patient", (user) => _uow.PatientRepository.Add(new PatientModel { User = user }));
+
+        Menu? AddUserMenu(AdminModel loggedInUser, string typeDisplayName, Action<UserModel> addUser)
+        {
+            var menu = _menuFactory.Title($"Add {typeDisplayName}");
+            var user = PromptForUser(menu);
+            addUser(user);
             _uow.SaveChanges();
-            menu.Text($"{name} added to the system")
+            menu.Text($"{user.Name} added to the system")
                 .WaitForInput();
 
             return () => GetAdminMainMenu(loggedInUser);
         }
 
-        IMenu? AddPatientMenu(AdminModel loggedInUser)
+        UserModel PromptForUser(IOpenMenuBuilder menu)
         {
             var name = "";
             var email = "";
             var phone = "";
             var address = "";
             byte[] password = { };
-            var menu = _menuFactory.Title("Add Doctor")
-                .Text($"Registering a new doctor with the {Constants.ApplcationName}")
-                // TODO: overload without validation (extension method?)
-                .PromptForText("First Name: ", x => true, firstName => name += firstName)
-                .PromptForText("Last Name: ", x => true, lastName => name += " " + lastName)
-                .PromptForText("Email: ", x => x.Contains("@") && x.Contains("."), x => email = x)
-                .PromptForText("Phone: ", x => x.All(c => char.IsDigit(c) || char.IsWhiteSpace(c) || c == '+'), p => phone = p)
-                .PromptForNumber("Street Number: ", x => x > 0, n => address += n.ToString())
-                .PromptForText("Street: ", x => true, s => address += " " + s)
-                .PromptForText("City: ", x => true, c => address += " " + c)
-                .PromptForText("State: ", x => true, s => address += ", " + s)
-                .PromptForPassword("Password: ", x => true, p => password = p);
+            menu.Text($"Registering a new doctor with the {Constants.ApplcationName}")
+                .PromptForText("First Name: ", firstName => name += firstName)
+                .PromptForText("Last Name: ", lastName => name += " " + lastName)
+                .PromptForText("Email: ", x => email = x, validate: x => x.Contains("@") && x.Contains("."))
+                .PromptForText("Phone: ", p => phone = p, validate: x => x.All(c => char.IsDigit(c) || char.IsWhiteSpace(c) || c == '+'))
+                .PromptForNumber("Street Number: ", n => address += n.ToString())
+                .PromptForText("Street: ", s => address += " " + s)
+                .PromptForText("City: ", c => address += " " + c)
+                .PromptForText("State: ", s => address += ", " + s)
+                .PromptForPassword("Password: ", p => password = p);
 
-            var user = new UserModel { Address = address, Email = email, Phone = phone, Name = name, Password = password, Discriminator = UserType.Patient };
-            _uow.PatientRepository.Add(new PatientModel { User = user });
-            _uow.SaveChanges();
-            menu.Text($"{name} added to the system")
-                .WaitForInput();
-
-            return () => GetAdminMainMenu(loggedInUser);
+            return new UserModel { Address = address, Email = email, Phone = phone, Name = name, Password = password, Discriminator = UserType.Doctor };
         }
 
         IMenuBuilder _menuFactory;

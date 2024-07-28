@@ -54,7 +54,7 @@ namespace HospitalManagmentSystem
             });
 
             var loginController = services.GetRequiredService<LoginModule>();
-            IMenu? currentMenu = loginController.GetLoginMenu();
+            Menu? currentMenu = loginController.GetLoginMenu();
             while (currentMenu != null)
             {
                 currentMenu = currentMenu();

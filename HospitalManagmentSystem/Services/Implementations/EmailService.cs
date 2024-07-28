@@ -1,6 +1,6 @@
-﻿using System.Net.Mail;
+﻿using HospitalManagmentSystem.Services.Interfaces;
+using System.Net.Mail;
 using System.Text;
-using HospitalManagmentSystem.Services.Interfaces;
 
 namespace HospitalManagmentSystem.Services.Implementations
 {

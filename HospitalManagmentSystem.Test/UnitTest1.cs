@@ -1,7 +1,3 @@
-using HospitalManagmentSystem.Database.Models;
-using Microsoft.EntityFrameworkCore;
-using Moq;
-
 namespace HospitalManagmentSystem.Test
 {
     public class Tests

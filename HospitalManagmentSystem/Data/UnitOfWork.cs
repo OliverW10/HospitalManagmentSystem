@@ -12,7 +12,6 @@ namespace HospitalManagmentSystem.Data
         }
 
         IRepository<AdminModel> IUnitOfWork.AdminRepository => new AdminRepository(Context);
-
         IRepository<AppointmentModel> IUnitOfWork.AppointmentRepository => new AppointmentRepository(Context);
         IRepository<DoctorModel> IUnitOfWork.DoctorRepository => new DoctorRepository(Context);
         IRepository<PatientModel> IUnitOfWork.PatientRepository => new PatientRepository(Context);

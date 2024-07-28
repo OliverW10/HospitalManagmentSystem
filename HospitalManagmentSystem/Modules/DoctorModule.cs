@@ -1,6 +1,7 @@
-﻿using HospitalManagmentSystem.Data.Repositories;
-using HospitalManagmentSystem.Data;
+﻿using HospitalManagmentSystem.Data;
+using HospitalManagmentSystem.Data.Repositories;
 using HospitalManagmentSystem.Database.Models;
+using HospitalManagmentSystem.Services.Implementations;
 using HospitalManagmentSystem.Services.Interfaces;
 
 namespace HospitalManagmentSystem.Controllers
@@ -15,7 +16,7 @@ namespace HospitalManagmentSystem.Controllers
             _uow = uow;
         }
 
-        public IMenu? GetDoctorMainMenu(DoctorModel loggedInUser)
+        public Menu? GetDoctorMainMenu(DoctorModel loggedInUser)
         {
             return _menuFactory
                 .Title("Doctor Menu")
@@ -33,7 +34,7 @@ namespace HospitalManagmentSystem.Controllers
                 .GetOptionResult();
         }
 
-        IMenu? DoctorDetailsMenu(DoctorModel loggedInUser)
+        Menu? DoctorDetailsMenu(DoctorModel loggedInUser)
         {
             var user = loggedInUser.User;
 
@@ -50,29 +51,20 @@ namespace HospitalManagmentSystem.Controllers
             return () => GetDoctorMainMenu(loggedInUser);
         }
 
-        IMenu? PatientListMenu(DoctorModel loggedInUser)
+        Menu? PatientListMenu(DoctorModel loggedInUser)
         {
             var patients = _uow.PatientRepository.Find(p => p.Doctor == loggedInUser);
-
-            var tableColumns = new TableColumns<PatientModel>()
-            {
-                { "Id", p => p.Id.ToString() },
-                { "Patient Name", p => p.User.Name },
-                { "Email Address", p => p.User.Email },
-                { "Phone Number", p => p.User.Phone },
-                { "Home Address", p => p.User.Address },
-            };
 
             _menuFactory
                 .Title("My Patients")
                 .Text($"Patients assigned to {loggedInUser.User.Name}:\n")
-                .Table(patients, tableColumns)
+                .Table(patients, TableColumnFactory<PatientModel>.UserTableColumns)
                 .WaitForInput();
 
             return () => GetDoctorMainMenu(loggedInUser);
         }
 
-        IMenu? AppointmentsListMenu(DoctorModel loggedInDoctor)
+        Menu? AppointmentsListMenu(DoctorModel loggedInDoctor)
         {
             var appointments = _uow.AppointmentRepository.Find(a => a.Doctor == loggedInDoctor);
             var tableColumns = new TableColumns<AppointmentModel>()
@@ -90,27 +82,20 @@ namespace HospitalManagmentSystem.Controllers
             return () => GetDoctorMainMenu(loggedInDoctor);
         }
 
-        IMenu? PatientIndividualMenu(DoctorModel loggedInDoctor)
+        Menu? PatientIndividualMenu(DoctorModel loggedInDoctor)
         {
-            var tableColumns = new TableColumns<PatientModel>()
-            {
-                { "Id", pat => pat.Id.ToString() },
-                { "Email Address", pat => pat.User.Email },
-                { "Phone", pat => pat.User.Phone },
-                { "Address", pat => pat.User.Address },
-            };
             int patientIdToCheck = 0;
 
             var menu = _menuFactory
                 .Title("Check Patient Details")
-                .PromptForNumber("Enter the ID of the patient to check: ", id => loggedInDoctor.Patients.Select(p => p.Id).Contains(id), id => patientIdToCheck = id)
-                .Table(loggedInDoctor.Patients.Where(p => p.Id == patientIdToCheck), tableColumns)
+                .PromptForNumber("Enter the ID of the patient to check: ", id => patientIdToCheck = id, validate: id => loggedInDoctor.Patients.Select(p => p.Id).Contains(id))
+                .Table(loggedInDoctor.Patients.Where(p => p.Id == patientIdToCheck), TableColumnFactory<PatientModel>.UserTableColumns)
                 .WaitForInput();
 
             return () => GetDoctorMainMenu(loggedInDoctor);
         }
 
-        IMenu? ListAppointmentsWithPatientMenu(DoctorModel loggedInDoctor)
+        Menu? ListAppointmentsWithPatientMenu(DoctorModel loggedInDoctor)
         {
             var tableColumns = new TableColumns<AppointmentModel>()
             {
@@ -124,7 +109,7 @@ namespace HospitalManagmentSystem.Controllers
             _menuFactory
                 .Title("Appointments With")
                 .Text($"View appoints for {loggedInDoctor.User.Name} and specific patient")
-                .PromptForNumber("Enter the ID of the patient you would like to view appointments for: ", id => loggedInDoctor.Patients.Select(p => p.Id).Contains(id), id => patientId = id)
+                .PromptForNumber("Enter the ID of the patient you would like to view appointments for: ", id => patientId = id, validate: id => loggedInDoctor.Patients.Select(p => p.Id).Contains(id))
                 .Table(loggedInDoctor.Appointments.Where(a => a.Patient.Id == patientId), tableColumns)
                 .WaitForInput();
 

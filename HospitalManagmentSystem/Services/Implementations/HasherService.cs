@@ -1,6 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using HospitalManagmentSystem.Services.Interfaces;
 using System.Text;
-using HospitalManagmentSystem.Services.Interfaces;
 
 namespace HospitalManagmentSystem.Services.Implementations
 {

@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using HospitalManagmentSystem.Services.Interfaces;
-
-namespace HospitalManagmentSystem.Services.Implementations
+﻿namespace HospitalManagmentSystem.Services.Implementations
 {
     internal class TableLayoutService
     {

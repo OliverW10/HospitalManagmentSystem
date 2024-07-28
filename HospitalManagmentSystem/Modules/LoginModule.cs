@@ -1,6 +1,7 @@
 ﻿using HospitalManagmentSystem.Data;
 using HospitalManagmentSystem.Data.Repositories;
 using HospitalManagmentSystem.Database.Models;
+using HospitalManagmentSystem.Services.Implementations;
 using HospitalManagmentSystem.Services.Interfaces;
 
 namespace HospitalManagmentSystem.Controllers
@@ -15,7 +16,7 @@ namespace HospitalManagmentSystem.Controllers
             _uow = unitOfWork;
         }
 
-        public IMenu? GetLoginMenu()
+        public Menu? GetLoginMenu()
         {
             int? loginId = null;
             byte[]? loginHashedPassword = null;
@@ -23,8 +24,8 @@ namespace HospitalManagmentSystem.Controllers
                 .Title("Login");
             while (true)
             {
-                menu.PromptForNumber("ID: ", _ => true, id => loginId = id)
-                    .PromptForPassword("Password: ", _ => true, pw => loginHashedPassword = pw);
+                menu.PromptForNumber("ID: ", id => loginId = id)
+                    .PromptForPassword("Password: ", pw => loginHashedPassword = pw);
 
                 if (GetUser(loginId, loginHashedPassword) is UserModel user)
                 {
@@ -53,7 +54,7 @@ namespace HospitalManagmentSystem.Controllers
             return _users.Find(u => u.Id == loginId && u.Password == hashedPassword).FirstOrDefault();
         }
 
-        public IMenu? MainMenu()
+        public Menu? MainMenu()
         {
             throw new NotImplementedException();
         }

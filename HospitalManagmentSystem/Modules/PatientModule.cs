@@ -1,10 +1,8 @@
 ﻿using HospitalManagmentSystem.Data;
 using HospitalManagmentSystem.Data.Repositories;
 using HospitalManagmentSystem.Database.Models;
+using HospitalManagmentSystem.Services.Implementations;
 using HospitalManagmentSystem.Services.Interfaces;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
-using System.Linq.Expressions;
 
 namespace HospitalManagmentSystem.Controllers
 {
@@ -18,7 +16,7 @@ namespace HospitalManagmentSystem.Controllers
             _uow = uow;
         }
 
-        public IMenu? GetPatientMainMenu(PatientModel loggedInUser)
+        public Menu? GetPatientMainMenu(PatientModel loggedInUser)
         {
             return _menuFactory
                 .Title("Patient Menu")
@@ -35,7 +33,7 @@ namespace HospitalManagmentSystem.Controllers
                 .GetOptionResult();
         }
 
-        IMenu? PatientDetailsMenu(PatientModel loggedInUser)
+        Menu? PatientDetailsMenu(PatientModel loggedInUser)
         {
             var user = loggedInUser.User;
 
@@ -52,7 +50,7 @@ namespace HospitalManagmentSystem.Controllers
             return () => GetPatientMainMenu(loggedInUser);
         }
 
-        IMenu? DoctorDetailsMenu(PatientModel loggedInUser)
+        Menu? DoctorDetailsMenu(PatientModel loggedInUser)
         {
             var doctor = loggedInUser.Doctor;
 
@@ -60,16 +58,8 @@ namespace HospitalManagmentSystem.Controllers
                 .Title("My Doctor");
             if (doctor != null)
             {
-                var tableColumns = new TableColumns<DoctorModel>()
-                {
-                    { "Id", doc => doc.Id.ToString() },
-                    { "Full Name", doc => doc.User.Name },
-                    { "EMail Address", doc => doc.User.Email },
-                    { "Work Address", doc => doc.User.Address },
-                    { "Phone Number", doc => doc.User.Phone },
-                };
                 menu.Text("Your Doctor:\n")
-                    .Table(new List<DoctorModel> { doctor }, tableColumns);
+                    .Table(new List<DoctorModel> { doctor }, TableColumnFactory<DoctorModel>.UserTableColumns);
             }
             else
             {
@@ -81,7 +71,7 @@ namespace HospitalManagmentSystem.Controllers
             return () => GetPatientMainMenu(loggedInUser);
         }
 
-        IMenu? ListAppointmentsMenu(PatientModel patient)
+        Menu? ListAppointmentsMenu(PatientModel patient)
         {
             var tableColumns = new TableColumns<AppointmentModel>()
             {
@@ -98,7 +88,7 @@ namespace HospitalManagmentSystem.Controllers
             return () => GetPatientMainMenu(patient);
         }
 
-        IMenu? BookAppointmentMenu(PatientModel patient)
+        Menu? BookAppointmentMenu(PatientModel patient)
         {
             if (patient.Doctor == null)
             {
@@ -110,7 +100,7 @@ namespace HospitalManagmentSystem.Controllers
             var menu = _menuFactory
                 .Title("Book Appointment")
                 .Text($"You are booking an appointment with: {patient.Doctor.User.Name}")
-                .PromptForText("Description of appointment: ", _ => true, entered => description = entered);
+                .PromptForText("Description of appointment: ", entered => description = entered);
 
             _uow.AppointmentRepository.Add(new AppointmentModel { Description = description, Doctor = patient.Doctor, Patient = patient });
             _uow.SaveChanges();
@@ -121,7 +111,7 @@ namespace HospitalManagmentSystem.Controllers
             return () => GetPatientMainMenu(patient);
         }
 
-        IMenu? SelectDoctorMenu(PatientModel patient)
+        Menu? SelectDoctorMenu(PatientModel patient)
         {
             var options = _menuFactory
                 .Title("Book Appointment")
@@ -136,7 +126,7 @@ namespace HospitalManagmentSystem.Controllers
             return options.GetOptionResult()();
         }
 
-        IMenu? AssignDoctorToPatient(PatientModel patient, DoctorModel doctor)
+        Menu? AssignDoctorToPatient(PatientModel patient, DoctorModel doctor)
         {
             patient.Doctor = doctor;
             _uow.SaveChanges();

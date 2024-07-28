@@ -1,7 +1,4 @@
-﻿using HospitalManagmentSystem.Data.Models;
-using HospitalManagmentSystem.Database.Models;
-using System.Collections;
-using System.Linq.Expressions;
+﻿using HospitalManagmentSystem.Services.Implementations;
 
 namespace HospitalManagmentSystem.Services.Interfaces
 {
@@ -19,36 +16,16 @@ namespace HospitalManagmentSystem.Services.Interfaces
         IOpenMenuBuilder Table<T>(IEnumerable<T> rows, TableColumns<T> columns);
         IOptionsMenuBuilder StartOptions();
         IOpenMenuBuilder WaitForInput();
-        IOpenMenuBuilder PromptForText(string promptText, Predicate<string> validate, Action<string> recievePromptvalue);
-        IOpenMenuBuilder PromptForNumber(string promptText, Predicate<int> validate, Action<int> recievePromptvalue);
-        IOpenMenuBuilder PromptForPassword(string promptText, Predicate<string> validate, Action<byte[]> recievePromptvalue);
-    }
-
-    struct TableColumns<T> : IEnumerable<string>
-    {
-        internal List<string> Names = new List<string>();
-        internal List<Expression<Func<T, string>>> ValueGetters = new List<Expression<Func<T, string>>>();
-
-        public TableColumns() { }
-
-        // Add 'trait' is used by collection initializer sytax
-        public void Add(string name, Expression<Func<T, string>> getter)
-        {
-            Names.Add(name);
-            ValueGetters.Add(getter);
-        }
-
-        // Must implement IEnumerable to allow collection initializer syntax
-        public IEnumerator<string> GetEnumerator() => Names.GetEnumerator();
-
-        IEnumerator IEnumerable.GetEnumerator() => Names.GetEnumerator();
+        IOpenMenuBuilder PromptForText(string promptText, Action<string> recievePromptvalue, Predicate<string> validate);
+        IOpenMenuBuilder PromptForNumber(string promptText, Action<int> recievePromptvalue, Predicate<int> validate);
+        IOpenMenuBuilder PromptForPassword(string promptText, Action<byte[]> recievePromptvalue, Predicate<string> validate);
     }
 
     interface IOptionsMenuBuilder
     {
-        IOptionsMenuBuilder Option(string optionDescription, IMenu getNextMenu);
-        IMenu GetOptionResult();
+        IOptionsMenuBuilder Option(string optionDescription, Menu getNextMenu);
+        Menu GetOptionResult();
     }
 
-    internal delegate IMenu? IMenu();
+    internal delegate Menu? Menu();
 }

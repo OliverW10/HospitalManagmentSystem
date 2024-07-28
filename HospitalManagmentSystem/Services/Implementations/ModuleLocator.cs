@@ -8,22 +8,22 @@ namespace HospitalManagmentSystem.Services.Implementations
     // Exists to decouple modules from each other and to allow circular references between them
     internal class ModuleLocator(IServiceProvider serviceProvider) : IModuleLocator
     {
-        public IMenu GetAdminModule(AdminModel user)
+        public Menu GetAdminModule(AdminModel user)
         {
             return () => serviceProvider.GetRequiredService<AdminModule>().GetAdminMainMenu(user);
         }
 
-        public IMenu GetDoctorModule(DoctorModel user)
+        public Menu GetDoctorModule(DoctorModel user)
         {
             return () => serviceProvider.GetRequiredService<DoctorModule>().GetDoctorMainMenu(user);
         }
 
-        public IMenu GetLoginModule()
+        public Menu GetLoginModule()
         {
             return () => serviceProvider.GetRequiredService<LoginModule>().GetLoginMenu();
         }
 
-        public IMenu GetPatientModule(PatientModel user)
+        public Menu GetPatientModule(PatientModel user)
         {
             return () => serviceProvider.GetRequiredService<PatientModule>().GetPatientMainMenu(user);
         }

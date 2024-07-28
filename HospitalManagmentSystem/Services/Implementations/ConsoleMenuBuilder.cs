@@ -1,10 +1,5 @@
-﻿using HospitalManagmentSystem.Data.Models;
-using HospitalManagmentSystem.Database.Models;
-using HospitalManagmentSystem.Services.Interfaces;
-using Microsoft.EntityFrameworkCore.Metadata.Conventions;
-using Microsoft.EntityFrameworkCore.Update.Internal;
+﻿using HospitalManagmentSystem.Services.Interfaces;
 using System.Data;
-using System.Linq.Expressions;
 
 namespace HospitalManagmentSystem.Services.Implementations
 {
@@ -18,11 +13,11 @@ namespace HospitalManagmentSystem.Services.Implementations
 
         public IOptionsMenuBuilder StartOptions()
         {
-            _optionsMapping = new Dictionary<int, IMenu>();
+            _optionsMapping = new Dictionary<int, Menu>();
             return this;
         }
 
-        public IOptionsMenuBuilder Option(string optionDescription, IMenu getNextMenu)
+        public IOptionsMenuBuilder Option(string optionDescription, Menu getNextMenu)
         {
             var num = 1 + _optionsMapping.Count;
             Console.WriteLine($"{num}) {optionDescription}");
@@ -30,7 +25,7 @@ namespace HospitalManagmentSystem.Services.Implementations
             return this;
         }
 
-        IMenu IOptionsMenuBuilder.GetOptionResult()
+        Menu IOptionsMenuBuilder.GetOptionResult()
         {
             while (true)
             {
@@ -100,7 +95,7 @@ namespace HospitalManagmentSystem.Services.Implementations
             return $"{paddingLeft}{text}{paddingRight}";
         }
 
-        public IOpenMenuBuilder PromptForText(string promptText, Predicate<string> validate, Action<string> recievePromptvalue)
+        public IOpenMenuBuilder PromptForText(string promptText, Action<string> recievePromptvalue, Predicate<string> validate)
         {
             while (true)
             {
@@ -111,10 +106,14 @@ namespace HospitalManagmentSystem.Services.Implementations
                     recievePromptvalue(entered);
                     return this;
                 }
+                else
+                {
+                    Console.WriteLine("Invalid, Try again");
+                }
             }
         }
 
-        public IOpenMenuBuilder PromptForNumber(string promptText, Predicate<int> validate, Action<int> recievePromptvalue)
+        public IOpenMenuBuilder PromptForNumber(string promptText, Action<int> recievePromptvalue, Predicate<int> validate)
         {
             while (true)
             {
@@ -125,10 +124,14 @@ namespace HospitalManagmentSystem.Services.Implementations
                     recievePromptvalue(enteredInt);
                     return this;
                 }
+                else
+                {
+                    Console.WriteLine("Invalid, Try again");
+                }
             }
         }
 
-        public IOpenMenuBuilder PromptForPassword(string promptText, Predicate<string> validate, Action<byte[]> recievePromptvalue)
+        public IOpenMenuBuilder PromptForPassword(string promptText, Action<byte[]> recievePromptvalue, Predicate<string> validate)
         {
             var passwordStack = new Stack<char>();
             Console.Write(promptText);
@@ -170,7 +173,7 @@ namespace HospitalManagmentSystem.Services.Implementations
             return this;
         }
 
-        Dictionary<int, IMenu> _optionsMapping = [];
+        Dictionary<int, Menu> _optionsMapping = [];
         IHasherService _hasher;
         TableLayoutService _tableLayout;
     }

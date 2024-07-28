@@ -6,6 +6,10 @@ namespace HospitalManagmentSystem.Database.Models
 {
     public class DoctorModel : IDbUserModel
     {
+        public DoctorModel()
+        {
+        }
+
         [Key]
         [ForeignKey(nameof(User))]
         public int Id { get; set; }
