@@ -1,5 +1,6 @@
 ﻿using HospitalManagmentSystem.Database;
 using HospitalManagmentSystem.Database.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace HospitalManagmentSystem.Data.Repositories
 {
@@ -9,7 +10,7 @@ namespace HospitalManagmentSystem.Data.Repositories
 
         public IQueryable<AdminModel> GetAll()
         {
-            return _context.Admins;
+            return _context.Admins.Include(a => a.User);
         }
     }
 }

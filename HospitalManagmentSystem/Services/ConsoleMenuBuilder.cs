@@ -100,7 +100,7 @@ namespace HospitalManagmentSystem.Services
             return $"{paddingLeft}{text}{paddingRight}";
         }
 
-        public IPromptMenuBuilder PromptForText(string promptText, Predicate<string> validate, Action<string> recievePromptvalue)
+        public IOpenMenuBuilder PromptForText(string promptText, Predicate<string> validate, Action<string> recievePromptvalue)
         {
             while (true)
             {
@@ -114,7 +114,7 @@ namespace HospitalManagmentSystem.Services
             }
         }
 
-        public IPromptMenuBuilder PromptForNumber(string promptText, Predicate<int> validate, Action<int> recievePromptvalue)
+        public IOpenMenuBuilder PromptForNumber(string promptText, Predicate<int> validate, Action<int> recievePromptvalue)
         {
             while (true)
             {
@@ -128,7 +128,7 @@ namespace HospitalManagmentSystem.Services
             }
         }
 
-        public IPromptMenuBuilder PromptForPassword(string promptText, Predicate<string> validate, Action<byte[]> recievePromptvalue)
+        public IOpenMenuBuilder PromptForPassword(string promptText, Predicate<string> validate, Action<byte[]> recievePromptvalue)
         {
             var passwordStack = new Stack<char>();
             Console.Write(promptText);
@@ -173,6 +173,5 @@ namespace HospitalManagmentSystem.Services
         Dictionary<int, IMenu> _optionsMapping = [];
         IHasherService _hasher;
         TableLayoutService _tableLayout;
-        int _optionNum = 0;
     }
 }

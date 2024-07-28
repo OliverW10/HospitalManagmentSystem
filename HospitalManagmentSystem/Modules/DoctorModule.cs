@@ -19,7 +19,8 @@ namespace HospitalManagmentSystem.Controllers
         {
             return _menuFactory
                 .Title("Doctor Menu")
-                .Text($"Welcome to {Constants.ApplcationName}\n")
+                .Text($"Welcome to {Constants.ApplcationName}")
+                .Text($"Logged in as Doctor - {loggedInUser.User.Name}\n")
                 .Text("Please choose an option:")
                 .StartOptions()
                 .Option("List doctor details", () => DoctorDetailsMenu(loggedInUser))
@@ -51,7 +52,7 @@ namespace HospitalManagmentSystem.Controllers
 
         IMenu? PatientListMenu(DoctorModel loggedInUser)
         {
-            var patients = loggedInUser.Patients;
+            var patients = _uow.PatientRepository.Find(p => p.Doctor == loggedInUser);
 
             var tableColumns = new TableColumns<PatientModel>()
             {
@@ -73,16 +74,17 @@ namespace HospitalManagmentSystem.Controllers
 
         IMenu? AppointmentsListMenu(DoctorModel loggedInDoctor)
         {
+            var appointments = _uow.AppointmentRepository.Find(a => a.Doctor == loggedInDoctor);
             var tableColumns = new TableColumns<AppointmentModel>()
             {
                 { "Id", apt => apt.Id.ToString() },
-                { "Patient Name", apt => apt.Doctor.User.Name },
+                { "Patient Name", apt => apt.Patient.User.Name },
                 { "Description", apt => apt.Description },
             };
             _menuFactory
                 .Title("My Appointments")
                 .Text($"Appointments for {loggedInDoctor.User.Name}\n")
-                .Table(loggedInDoctor.Appointments, tableColumns)
+                .Table(appointments, tableColumns)
                 .WaitForInput();
 
             return () => GetDoctorMainMenu(loggedInDoctor);

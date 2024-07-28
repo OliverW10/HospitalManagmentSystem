@@ -28,15 +28,17 @@ namespace HospitalManagmentSystem.Controllers
 
                 if (GetUser(loginId, loginHashedPassword) is UserModel user)
                 {
-                    ShowCorrect(menu);
+                    menu.Text("Valid Credentials");
+                    // Delay to allow 'Valid Credentials' to be read
+                    //Thread.Sleep(1000);
                     switch (user.Discriminator)
                     {
                         case UserType.Admin:
                             var admin = _uow.AdminRepository.Find(a => a.Id == loginId).First();
-                            return null;
+                            return () => _moduleFactory.GetAdminModule(admin);
                         case UserType.Doctor:
                             var doctor = _uow.DoctorRepository.Find(d => d.Id == loginId).First();
-                            return null;
+                            return () => _moduleFactory.GetDoctorModule(doctor);
                         case UserType.Patient:
                             var patient = _uow.PatientRepository.Find(p => p.Id == loginId).First();
                             return () => _moduleFactory.GetPatientModule(patient);
@@ -49,13 +51,6 @@ namespace HospitalManagmentSystem.Controllers
         UserModel? GetUser(int? loginId, byte[]? hashedPassword)
         {
             return _users.Find(u => u.Id == loginId && u.Password == hashedPassword).FirstOrDefault();
-        }
-
-        void ShowCorrect(IPromptMenuBuilder menu)
-        {
-            menu.Text("Valid Credentials");
-            // Delay to allow 'Valid Credentials' to be read
-            //Thread.Sleep(1000);
         }
 
         public IMenu? MainMenu()

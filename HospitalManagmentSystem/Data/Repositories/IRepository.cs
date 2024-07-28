@@ -22,17 +22,25 @@ namespace HospitalManagmentSystem.Data.Repositories
             return repo.GetAll().First(x => x.Id == id);
         }
 
-        public static IEnumerable<T> Find<T>(this IRepository<T> repo, Expression<Func<T, bool>> predicate) where T : IDbModel
+        public static IQueryable<T> Find<T>(this IRepository<T> repo, Expression<Func<T, bool>> predicate) where T : IDbModel
         {
+            // Can't use the built-in Predicate<T> type because for some reason it is not convertable to a Func<T, bool>
+            // which, for some reason, Linq uses instead of the Predicate type?
             return repo.GetAll().Where(predicate);
         }
 
         public static T GetRandom<T>(this IRepository<T> repo, Random rand) where T : IDbModel
         {
-            var all = repo.GetAll();
-            var skipped = all.Skip(rand.Next(all.Count()));
-            var took = skipped.Take(1);
-            var first = took.First();
+            return repo.GetAll().GetRandom(rand);
+        }
+    }
+
+    public static class IEnumerableExtensions
+    {
+        public static T GetRandom<T>(this IEnumerable<T> collection, Random rand)
+        {
+            var skipped = collection.Skip(rand.Next(collection.Count()));
+            var first = skipped.First();
             return first;
         }
     }

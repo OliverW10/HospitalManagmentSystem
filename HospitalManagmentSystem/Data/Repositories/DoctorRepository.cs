@@ -11,7 +11,8 @@ namespace HospitalManagmentSystem.Data.Repositories
         public IQueryable<DoctorModel> GetAll()
         {
             return _context.Doctors
-                .Include(d => d.Patients);
+                .Include(d => d.Patients)
+                .ThenInclude(p => p.User);
         }
     }
 }

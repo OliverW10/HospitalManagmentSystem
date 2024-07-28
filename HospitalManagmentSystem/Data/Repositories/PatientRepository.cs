@@ -13,7 +13,7 @@ namespace HospitalManagmentSystem.Data.Repositories
             return _context.Patients
                 .Include(p => p.User)
                 .Include(p => p.Doctor)
-                .ThenInclude(d => d.User); // TODO: how to load this properly
+                .ThenInclude(d => d!.User); // Nullable warning can be ignored because it is interpretred into an sql query with a join instead of in the clr
         }
     }
 }

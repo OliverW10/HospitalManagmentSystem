@@ -37,16 +37,14 @@ namespace HospitalManagmentSystem.Test.Services
             var hasher = new Mock<IHasherService>();
             var seeder = new Seeder(uow.Object, hasher.Object, new Random(Seed: 123));
 
-            var count = 10;
-
             // Act
-            seeder.Seed(count);
+            seeder.Seed();
 
             // Assert
-            adminRepo.Verify(r => r.Add(It.IsAny<AdminModel>()), Times.Exactly(count));
-            doctorRepo.Verify(r => r.Add(It.IsAny<DoctorModel>()), Times.Exactly(count));
-            patientRepo.Verify(r => r.Add(It.IsAny<PatientModel>()), Times.Exactly(count));
-            appointmentRepo.Verify(r => r.Add(It.IsAny<AppointmentModel>()), Times.Exactly(count));
+            adminRepo.Verify(r => r.Add(It.IsAny<AdminModel>()), Times.Exactly(3));
+            doctorRepo.Verify(r => r.Add(It.IsAny<DoctorModel>()), Times.Exactly(5));
+            patientRepo.Verify(r => r.Add(It.IsAny<PatientModel>()), Times.Exactly(10));
+            appointmentRepo.Verify(r => r.Add(It.IsAny<AppointmentModel>()), Times.Exactly(15));
         }
     }
 }

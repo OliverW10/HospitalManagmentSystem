@@ -40,6 +40,7 @@ namespace HospitalManagmentSystem
                 var seeder = services.GetRequiredService<Seeder>();
                 seeder.Seed();
                 Console.WriteLine("Finished Seeding database");
+                return;
             }
 
             //var emailer = services.GetRequiredService<IMessageService>();

@@ -23,6 +23,7 @@ namespace HospitalManagmentSystem.Controllers
             return _menuFactory
                 .Title("Patient Menu")
                 .Text($"Welcome to {Constants.ApplcationName}\n")
+                .Text($"Logged in as Patient - {loggedInUser.User.Name}\n")
                 .Text("Please choose an option:")
                 .StartOptions()
                 .Option("List patient details", () => PatientDetailsMenu(loggedInUser))
@@ -127,11 +128,9 @@ namespace HospitalManagmentSystem.Controllers
                 .Text("You are not registered with any doctor! Please choose which doctor you would like to register with.")
                 .StartOptions();
 
-            int i = 0;
             foreach (var doc in _doctorRepo.GetAll())
             {
-                options.Option(i, $"{doc.User.Name}", () => AssignDoctorToPatient(patient, doc));
-                i++;
+                options.Option($"{doc.User.Name}", () => AssignDoctorToPatient(patient, doc));
             }
 
             return options.GetOptionResult()();

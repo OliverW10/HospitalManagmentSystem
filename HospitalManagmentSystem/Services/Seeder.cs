@@ -14,29 +14,39 @@ namespace HospitalManagmentSystem.Services
             _rand = rand;
         }
 
-        public void Seed(int numOfEach = 10)
+        public void Seed()
         {
-            DeleteAll(_uow.AppointmentRepository);
-            DeleteAll(_uow.AdminRepository);
-            DeleteAll(_uow.PatientRepository);
-            DeleteAll(_uow.DoctorRepository);
+            //DeleteAll(_uow.AppointmentRepository);
+            //DeleteAll(_uow.AdminRepository);
+            //DeleteAll(_uow.PatientRepository);
+            //DeleteAll(_uow.DoctorRepository);
 
-            _uow.SaveChanges();
+            List<DoctorModel> docs = new ();
+            List<PatientModel> patients = new ();
 
-            for (int i = 0; i < numOfEach; i++)
+            for (int i = 0; i < 3; i++)
             {
                 AddAdmin();
-                AddDoctor();
-                AddPatient();
+            }
+            for (int i = 0;i < 5; i++)
+            {
+                docs.Add(AddDoctor());
+            }
+            for (int i = 0; i < 20; i++)
+            {
+                patients.Add(AddPatient());
             }
 
             // https://stackoverflow.com/questions/46184937/dbcontext-not-returning-local-objects/46330600
-            _uow.SaveChanges();
+            //_uow.SaveChanges();
 
-            for (int i = 0; i < numOfEach; i++)
+            for (int i = 0; i < 15; i++)
             {
-                AssignPatientToDoctor();
-                AddAppointment();
+                patients[i].Doctor = docs.GetRandom(_rand);
+            }
+            for (int i = 0; i < 30; i++)
+            {
+                AddAppointment(docs, patients);
             }
 
             _uow.SaveChanges();
@@ -75,31 +85,28 @@ namespace HospitalManagmentSystem.Services
             _uow.AdminRepository.Add(new AdminModel { User = user });
         }
 
-        void AddDoctor()
+        DoctorModel AddDoctor()
         {
             var user = GetUser();
             user.Discriminator = UserType.Doctor;
-            _uow.DoctorRepository.Add(new DoctorModel { User = user });
+            var doctor = new DoctorModel { User = user };
+            _uow.DoctorRepository.Add(doctor);
+            return doctor;
         }
 
-        void AddPatient()
+        PatientModel AddPatient()
         {
             var user = GetUser();
             user.Discriminator = UserType.Patient;
-            _uow.PatientRepository.Add(new PatientModel { User = user });
+            var patient = new PatientModel { User = user };
+            _uow.PatientRepository.Add(patient);
+            return patient;
         }
 
-        void AssignPatientToDoctor()
+        public void AddAppointment(IEnumerable<DoctorModel> doctors, IEnumerable<PatientModel> patients)
         {
-            var doctor = _uow.DoctorRepository.GetRandom(_rand);
-            var patient = _uow.PatientRepository.GetRandom(_rand);
-            patient.Doctor = doctor;
-        }
-
-        public void AddAppointment()
-        {
-            var doctor = _uow.DoctorRepository.GetRandom(_rand);
-            var patient = _uow.PatientRepository.GetRandom(_rand);
+            var doctor = doctors.GetRandom(_rand);
+            var patient = patients.GetRandom(_rand);
             _uow.AppointmentRepository.Add(new AppointmentModel { Doctor = doctor, Patient = patient, Description = Description });
         }
 

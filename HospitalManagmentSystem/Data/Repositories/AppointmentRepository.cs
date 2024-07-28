@@ -12,7 +12,9 @@ namespace HospitalManagmentSystem.Data.Repositories
         {
             return _context.Appointments
                 .Include(a => a.Patient)
-                .Include(a => a.Doctor);
+                .ThenInclude(p => p.User)
+                .Include(a => a.Doctor)
+                .ThenInclude(d => d.User);
         }
     }
 }
