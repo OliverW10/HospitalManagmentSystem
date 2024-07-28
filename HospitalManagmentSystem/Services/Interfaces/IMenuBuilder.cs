@@ -3,7 +3,7 @@ using HospitalManagmentSystem.Database.Models;
 using System.Collections;
 using System.Linq.Expressions;
 
-namespace HospitalManagmentSystem.Services
+namespace HospitalManagmentSystem.Services.Interfaces
 {
     // The below interfaces express a 'fluent' API for constructing a menu
     // Allows for builder-like usage while using the type system to restrict unwanted behaviour (e.g. a title box after a prompt)

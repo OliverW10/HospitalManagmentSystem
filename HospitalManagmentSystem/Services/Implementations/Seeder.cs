@@ -2,8 +2,9 @@
 using HospitalManagmentSystem.Data.Models;
 using HospitalManagmentSystem.Data.Repositories;
 using HospitalManagmentSystem.Database.Models;
+using HospitalManagmentSystem.Services.Interfaces;
 
-namespace HospitalManagmentSystem.Services
+namespace HospitalManagmentSystem.Services.Implementations
 {
     public class Seeder
     {
@@ -21,14 +22,14 @@ namespace HospitalManagmentSystem.Services
             //DeleteAll(_uow.PatientRepository);
             //DeleteAll(_uow.DoctorRepository);
 
-            List<DoctorModel> docs = new ();
-            List<PatientModel> patients = new ();
+            List<DoctorModel> docs = new();
+            List<PatientModel> patients = new();
 
             for (int i = 0; i < 3; i++)
             {
                 AddAdmin();
             }
-            for (int i = 0;i < 5; i++)
+            for (int i = 0; i < 5; i++)
             {
                 docs.Add(AddDoctor());
             }
@@ -75,7 +76,7 @@ namespace HospitalManagmentSystem.Services
 
         UserModel GetUser()
         {
-            return new UserModel { Address = Address, Email = Email, Name = Name, Password = Password, Phone = Phone }; 
+            return new UserModel { Address = Address, Email = Email, Name = Name, Password = Password, Phone = Phone };
         }
 
         void AddAdmin()

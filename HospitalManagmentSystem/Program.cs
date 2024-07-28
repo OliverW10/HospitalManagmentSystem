@@ -3,7 +3,8 @@ using HospitalManagmentSystem.Data;
 using HospitalManagmentSystem.Data.Repositories;
 using HospitalManagmentSystem.Database;
 using HospitalManagmentSystem.Database.Models;
-using HospitalManagmentSystem.Services;
+using HospitalManagmentSystem.Services.Implementations;
+using HospitalManagmentSystem.Services.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace HospitalManagmentSystem

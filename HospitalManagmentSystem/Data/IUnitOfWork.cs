@@ -9,6 +9,7 @@ namespace HospitalManagmentSystem.Data
         IRepository<AppointmentModel> AppointmentRepository { get; }
         IRepository<DoctorModel> DoctorRepository { get; }
         IRepository<PatientModel> PatientRepository { get; }
+        //IRepository<UserModel> UserRepository { get; set; }
 
         int SaveChanges();
     }

@@ -1,7 +1,6 @@
 ﻿using HospitalManagmentSystem.Database.Models;
-using HospitalManagmentSystem.Services;
 
-namespace HospitalManagmentSystem.Controllers
+namespace HospitalManagmentSystem.Services.Interfaces
 {
     internal interface IModuleLocator
     {

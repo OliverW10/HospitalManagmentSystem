@@ -1,7 +1,8 @@
 ﻿using System.Net.Mail;
 using System.Text;
+using HospitalManagmentSystem.Services.Interfaces;
 
-namespace HospitalManagmentSystem.Services
+namespace HospitalManagmentSystem.Services.Implementations
 {
     internal class EmailService : IMessageService
     {

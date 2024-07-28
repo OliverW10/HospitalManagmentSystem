@@ -1,7 +1,7 @@
 ﻿using HospitalManagmentSystem.Data;
 using HospitalManagmentSystem.Data.Repositories;
 using HospitalManagmentSystem.Database.Models;
-using HospitalManagmentSystem.Services;
+using HospitalManagmentSystem.Services.Interfaces;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
 using System.Linq.Expressions;

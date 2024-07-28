@@ -1,12 +1,12 @@
-﻿
-using HospitalManagmentSystem.Data.Models;
+﻿using HospitalManagmentSystem.Data.Models;
 using HospitalManagmentSystem.Database.Models;
+using HospitalManagmentSystem.Services.Interfaces;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Microsoft.EntityFrameworkCore.Update.Internal;
 using System.Data;
 using System.Linq.Expressions;
 
-namespace HospitalManagmentSystem.Services
+namespace HospitalManagmentSystem.Services.Implementations
 {
     internal class ConsoleMenuBuilder : IMenuBuilder, IOpenMenuBuilder, IOptionsMenuBuilder
     {
@@ -65,7 +65,7 @@ namespace HospitalManagmentSystem.Services
 
             return this;
         }
-        
+
 
         public IOpenMenuBuilder Text(string text)
         {

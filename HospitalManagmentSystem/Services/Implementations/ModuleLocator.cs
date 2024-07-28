@@ -1,8 +1,9 @@
-﻿using HospitalManagmentSystem.Database.Models;
-using HospitalManagmentSystem.Services;
+﻿using HospitalManagmentSystem.Controllers;
+using HospitalManagmentSystem.Database.Models;
+using HospitalManagmentSystem.Services.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace HospitalManagmentSystem.Controllers
+namespace HospitalManagmentSystem.Services.Implementations
 {
     // Exists to decouple modules from each other and to allow circular references between them
     internal class ModuleLocator(IServiceProvider serviceProvider) : IModuleLocator

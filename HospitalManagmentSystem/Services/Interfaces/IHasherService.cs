@@ -1,4 +1,4 @@
-﻿namespace HospitalManagmentSystem.Services
+﻿namespace HospitalManagmentSystem.Services.Interfaces
 {
     public interface IHasherService
     {
