@@ -14,7 +14,8 @@ namespace HospitalManagmentSystem.Data.Repositories
                 .Include(a => a.Patient)
                 .ThenInclude(p => p.User)
                 .Include(a => a.Doctor)
-                .ThenInclude(d => d.User);
+                .ThenInclude(d => d.User)
+                .OrderBy(m => m.Id);
         }
     }
 }

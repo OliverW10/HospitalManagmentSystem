@@ -6,6 +6,7 @@ using HospitalManagmentSystem.Database.Models;
 using HospitalManagmentSystem.Services.Implementations;
 using HospitalManagmentSystem.Services.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection.Metadata;
 
 namespace HospitalManagmentSystem
 {
@@ -13,8 +14,9 @@ namespace HospitalManagmentSystem
     {
         public static void Main(string[] args)
         {
+            Console.WriteLine("Configuring Services...");
             ServiceProvider services = new ServiceCollection()
-                .AddSingleton<IDbContextConfigurator, SqlServerContextConfigurator>()
+                .AddSingleton<IDbContextConfigurator, LocalSqlServerConfigurator>()
                 .AddDbContext<HospitalContext>()
                 .AddTransient<IUnitOfWork, UnitOfWork>()
                 .AddTransient<IRepository<UserModel>, UserRepository>()
@@ -35,14 +37,7 @@ namespace HospitalManagmentSystem
                 .AddSingleton<Random>(Random.Shared)
                 .BuildServiceProvider();
 
-            if (args.Any(arg => arg == "seed"))
-            {
-                Console.WriteLine("Starting Seeding database");
-                var seeder = services.GetRequiredService<Seeder>();
-                seeder.Seed();
-                Console.WriteLine("Finished Seeding database");
-                return;
-            }
+            EnsureDatabasePopulated(services);
 
             //var emailer = services.GetRequiredService<IMessageService>();
             //emailer.Send("oliver.warrick2@gmail.com", "this is the contents of my email test test test");
@@ -59,6 +54,26 @@ namespace HospitalManagmentSystem
             {
                 currentMenu = currentMenu();
             }
+        }
+
+        static void EnsureDatabasePopulated(IServiceProvider services)
+        {
+            Console.WriteLine("Connecting to Database...");
+            var userRepo = services.GetRequiredService<IRepository<UserModel>>();
+            var count = userRepo.GetAll().Count();
+
+            if (count == 0)
+            {
+                SeedDatabase(services);
+            }
+        }
+
+        static void SeedDatabase(IServiceProvider services)
+        {
+            Console.WriteLine("Starting Seeding database");
+            var seeder = services.GetRequiredService<Seeder>();
+            seeder.Seed();
+            Console.WriteLine("Finished Seeding database");
         }
     }
 }

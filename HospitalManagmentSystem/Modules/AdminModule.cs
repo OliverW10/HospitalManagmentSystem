@@ -36,16 +36,9 @@ namespace HospitalManagmentSystem.Controllers
 
         Menu? ListAllDoctorsMenu(AdminModel loggedInUser)
         {
-            var tableColumns = new TableColumns<DoctorModel>()
-            {
-                { "Id", d => d.Id.ToString() },
-                { "Email Address", d => d.User.Email },
-                { "Phone", d => d.User.Phone },
-                { "Address", d => d.User.Address },
-            };
             _menuFactory.Title("All Doctors")
                 .Text($"All doctors registered to the {Constants.ApplcationName}")
-                .Table(_uow.DoctorRepository.GetAll(), tableColumns)
+                .Table(_uow.DoctorRepository.GetAll(), TableColumnFactory<DoctorModel>.UserTableColumns)
                 .WaitForInput();
             return () => GetAdminMainMenu(loggedInUser);
         }
@@ -63,17 +56,10 @@ namespace HospitalManagmentSystem.Controllers
             }
             else
             {
-                var columns = new TableColumns<DoctorModel>()
-                {
-                    { "Name", d => d.User.Name },
-                    { "Email Address", d => d.User.Email },
-                    { "Phone", d => d.User.Phone },
-                    { "Address", d => d.User.Address },
-                };
                 var doctor = _uow.DoctorRepository.GetById(enteredId);
                 menu
                     .Text($"\nDetails for {doctor.User.Name}:")
-                    .Table(new List<DoctorModel> { doctor }, columns)
+                    .Table(new List<DoctorModel> { doctor }, TableColumnFactory<DoctorModel>.UserTableColumns)
                     .WaitForInput();
             }
 
@@ -82,16 +68,9 @@ namespace HospitalManagmentSystem.Controllers
 
         Menu? ListAllPatientsMenu(AdminModel loggedInUser)
         {
-            var tableColumns = new TableColumns<PatientModel>()
-            {
-                { "Id", p => p.Id.ToString() },
-                { "Email Address", p => p.User.Email },
-                { "Phone", p => p.User.Phone },
-                { "Address", p => p.User.Address },
-            };
             _menuFactory.Title("All Patients")
                 .Text($"All patients registered in the {Constants.ApplcationName}")
-                .Table(_uow.PatientRepository.GetAll(), tableColumns)
+                .Table(_uow.PatientRepository.GetAll(), TableColumnFactory<PatientModel>.UserTableColumns)
                 .WaitForInput();
             return () => GetAdminMainMenu(loggedInUser);
         }
@@ -109,17 +88,9 @@ namespace HospitalManagmentSystem.Controllers
             }
             else
             {
-                var columns = new TableColumns<PatientModel>()
-                {
-                    // TODO: TableColumnsFactory(IDbUserModel)
-                    { "Name", p => p.User.Name },
-                    { "Email Address", p => p.User.Email },
-                    { "Phone", p => p.User.Phone },
-                    { "Address", p => p.User.Address },
-                };
                 var patient = _uow.PatientRepository.GetById(enteredId);
                 menu.Text($"\nDetails for {patient.User.Name}:")
-                    .Table(new List<PatientModel> { patient }, columns)
+                    .Table(new List<PatientModel> { patient }, TableColumnFactory<PatientModel>.UserTableColumns)
                     .WaitForInput();
             }
 
@@ -136,7 +107,7 @@ namespace HospitalManagmentSystem.Controllers
             var user = PromptForUser(menu);
             addUser(user);
             _uow.SaveChanges();
-            menu.Text($"{user.Name} added to the system")
+            menu.Text($"{user.Name} added to the system with id {user.Id}")
                 .WaitForInput();
 
             return () => GetAdminMainMenu(loggedInUser);
@@ -160,7 +131,7 @@ namespace HospitalManagmentSystem.Controllers
                 .PromptForText("State: ", s => address += ", " + s)
                 .PromptForPassword("Password: ", p => password = p);
 
-            return new UserModel { Address = address, Email = email, Phone = phone, Name = name, Password = password, Discriminator = UserType.Doctor };
+            return new UserModel { Address = address, Email = email, Phone = phone, Name = name, Password = password };
         }
 
         IMenuBuilder _menuFactory;

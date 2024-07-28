@@ -1,6 +1,8 @@
 ﻿using HospitalManagmentSystem.Database;
 using HospitalManagmentSystem.Database.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Net;
+using System.Numerics;
 
 namespace HospitalManagmentSystem.Data.Repositories
 {
@@ -13,7 +15,15 @@ namespace HospitalManagmentSystem.Data.Repositories
             return _context.Doctors
                 .Include(d => d.User)
                 .Include(d => d.Patients)
-                .ThenInclude(p => p.User);
+                .ThenInclude(p => p.User)
+                .OrderBy(m => m.Id);
+        }
+
+        public override void Add(DoctorModel doctor)
+        {
+            // All doctor creation should go through here to ensure that discriminator is set correctly
+            doctor.User.Discriminator = UserType.Doctor;
+            base.Add(doctor);
         }
     }
 }

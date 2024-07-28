@@ -1,5 +1,6 @@
 ﻿using HospitalManagmentSystem.Database.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace HospitalManagmentSystem.Database
 {
@@ -25,24 +26,20 @@ namespace HospitalManagmentSystem.Database
         }
     }
 
-    internal class SqlServerContextConfigurator : IDbContextConfigurator//, IDesignTimeDbContextFactory<HospitalContext>
+    internal class LocalSqlServerConfigurator : IDbContextConfigurator//, IDesignTimeDbContextFactory<HospitalContext>
     {
-        string HostName { get; }
-        string DatabaseName { get; }
+        string _hostname { get; }
+        string _dbName { get; }
 
-        public SqlServerContextConfigurator(string hostname = "localhost", string dbName = "HospitalAssignment")
+        public LocalSqlServerConfigurator(string hostname = "localhost", string dbName = "HospitalAssignment")
         {
-            HostName = hostname;
-            DatabaseName = dbName;
+            _hostname = hostname;
+            _dbName = dbName;
         }
 
         public void Configure(DbContextOptionsBuilder options)
         {
-        }
-
-        public HospitalContext CreateDbContext(string[] args)
-        {
-            throw new NotImplementedException();
+            options.UseSqlServer($"Server={_hostname};Database={_dbName};Trusted_Connection=True;TrustServerCertificate=True;");
         }
     }
 
@@ -50,14 +47,15 @@ namespace HospitalManagmentSystem.Database
     internal class HospitalContext : DbContext
     {
 
-        public HospitalContext()
+        public HospitalContext(IDbContextConfigurator configurator)
         {
+            _contextProvider = configurator;
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
-            options.UseSqlServer("Server=localhost;Database=HospitalAssignment;Trusted_Connection=True;TrustServerCertificate=True;");
-            //_contextProvider.Configure(options);
+            _contextProvider.Configure(options);
+            options.LogTo(message => Debug.WriteLine(message));
         }
 
 
@@ -66,5 +64,7 @@ namespace HospitalManagmentSystem.Database
         public DbSet<DoctorModel> Doctors { get; set; }
         public DbSet<PatientModel> Patients { get; set; }
         public DbSet<UserModel> Users { get; set; }
+
+        IDbContextConfigurator _contextProvider;
     }
 }

@@ -82,14 +82,12 @@ namespace HospitalManagmentSystem.Services.Implementations
         void AddAdmin()
         {
             var user = GetUser();
-            user.Discriminator = UserType.Admin;
             _uow.AdminRepository.Add(new AdminModel { User = user });
         }
 
         DoctorModel AddDoctor()
         {
             var user = GetUser();
-            user.Discriminator = UserType.Doctor;
             var doctor = new DoctorModel { User = user };
             _uow.DoctorRepository.Add(doctor);
             return doctor;
@@ -98,7 +96,6 @@ namespace HospitalManagmentSystem.Services.Implementations
         PatientModel AddPatient()
         {
             var user = GetUser();
-            user.Discriminator = UserType.Patient;
             var patient = new PatientModel { User = user };
             _uow.PatientRepository.Add(patient);
             return patient;

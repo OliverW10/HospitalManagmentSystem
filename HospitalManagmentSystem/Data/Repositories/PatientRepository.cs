@@ -13,7 +13,15 @@ namespace HospitalManagmentSystem.Data.Repositories
             return _context.Patients
                 .Include(p => p.User)
                 .Include(p => p.Doctor)
-                .ThenInclude(d => d!.User); // Nullable warning can be ignored because it is interpretred into an sql query with a join instead of in the clr
+                .ThenInclude(d => d!.User) // Nullable warning can be ignored because it is interpretred into an sql query with a join instead of in the clr
+                .OrderBy(m => m.Id);
+        }
+
+        public override void Add(PatientModel patient)
+        {
+            // All patient creation should go through here to ensure that discriminator is set correctly
+            patient.User.Discriminator = UserType.Patient;
+            base.Add(patient);
         }
     }
 }

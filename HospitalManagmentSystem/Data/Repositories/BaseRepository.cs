@@ -12,7 +12,7 @@ namespace HospitalManagmentSystem.Data.Repositories
 
         protected HospitalContext _context;
 
-        public void Add(T entity)
+        public virtual void Add(T entity)
         {
             _context.Set<T>().Add(entity);
         }

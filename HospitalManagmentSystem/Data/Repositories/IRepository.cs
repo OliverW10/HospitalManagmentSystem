@@ -39,9 +39,7 @@ namespace HospitalManagmentSystem.Data.Repositories
     {
         public static T GetRandom<T>(this IEnumerable<T> collection, Random rand)
         {
-            var skipped = collection.Skip(rand.Next(collection.Count()));
-            var first = skipped.First();
-            return first;
+            return collection.Skip(rand.Next(collection.Count())).First();
         }
     }
 }
