@@ -22,7 +22,7 @@ namespace HospitalManagmentSystem.Services.Implementations
             }
             // Required with Sqlite to force persistence of each user group in order so that the id's are generated in the correct order
             // for sql server these should be removed because the whole seeding process should be a single transaction
-            _uow.SaveChanges();
+            //_uow.SaveChanges();
 
             var doctors = new List<DoctorModel>();
             for (int i = 0; i < 10; i++)
@@ -31,7 +31,7 @@ namespace HospitalManagmentSystem.Services.Implementations
                 _uow.DoctorRepository.Add(doctor);
                 doctors.Add(doctor);
             }
-            _uow.SaveChanges();
+            //_uow.SaveChanges();
 
             var patients = new List<PatientModel>();
             for (int i = 0; i < 20; i++)
@@ -40,7 +40,7 @@ namespace HospitalManagmentSystem.Services.Implementations
                 _uow.PatientRepository.Add(patient);
                 patients.Add(patient);
             }
-            _uow.SaveChanges();
+            //_uow.SaveChanges();
 
             for (int i = 0; i < 50; i++)
             {
