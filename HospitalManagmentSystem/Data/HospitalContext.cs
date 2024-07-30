@@ -49,6 +49,10 @@ namespace HospitalManagmentSystem.Database
     internal class HospitalContext : DbContext
     {
 
+        public HospitalContext() : this(new SQLiteContextConfigurator())
+        {
+        }
+
         public HospitalContext(IDbContextConfigurator configurator)
         {
             _contextProvider = configurator;
@@ -62,11 +66,11 @@ namespace HospitalManagmentSystem.Database
         }
 
 
-        public DbSet<AdminModel> Admins { get; set; }
-        public DbSet<AppointmentModel> Appointments { get; set; }
-        public DbSet<DoctorModel> Doctors { get; set; }
-        public DbSet<PatientModel> Patients { get; set; }
-        public DbSet<UserModel> Users { get; set; }
+        public virtual DbSet<AdminModel> Admins { get; set; }
+        public virtual DbSet<AppointmentModel> Appointments { get; set; }
+        public virtual DbSet<DoctorModel> Doctors { get; set; }
+        public virtual DbSet<PatientModel> Patients { get; set; }
+        public virtual DbSet<UserModel> Users { get; set; }
 
         IDbContextConfigurator _contextProvider;
     }

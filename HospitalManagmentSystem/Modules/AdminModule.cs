@@ -46,6 +46,7 @@ namespace HospitalManagmentSystem.Controllers
         Menu? CheckDoctorDetails(AdminModel loggedInUser)
         {
             int enteredId = 0;
+            // Validation allows -1 because it is treated as a sentinel value
             Predicate<int> isIdValid = id => _uow.DoctorRepository.Find(d => d.Id == id).Any() || id == -1;
             var menu = _menuFactory.Title("Doctor Details")
                 .PromptForNumber("Please enter the ID of the doctor whos details you are checking, or -1 to return to the main menu: ", id => enteredId = id, validate: isIdValid);

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HospitalManagmentSystem.Test.Modules
+namespace HospitalManagmentSystem.Test.Data.Repositories
 {
-    internal class AdminModuleTest
+    internal interface IRepositoryExtensionsTest
     {
     }
 }

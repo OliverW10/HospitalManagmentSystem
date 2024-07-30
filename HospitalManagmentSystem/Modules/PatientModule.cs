@@ -89,7 +89,7 @@ namespace HospitalManagmentSystem.Controllers
             return () => GetPatientMainMenu(patient);
         }
 
-        Menu? BookAppointmentMenu(PatientModel patient)
+        internal Menu? BookAppointmentMenu(PatientModel patient)
         {
             if (patient.Doctor == null)
             {
