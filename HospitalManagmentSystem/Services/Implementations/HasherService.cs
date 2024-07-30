@@ -5,10 +5,10 @@ namespace HospitalManagmentSystem.Services.Implementations
 {
     internal class HasherService : IHasherService
     {
+        // This would be hashing and salting the password
         public byte[] HashPassword(string password)
         {
-            // TODO salt
-            return Encoding.UTF8.GetBytes(password); // SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(password));
+            return Encoding.UTF8.GetBytes(password);
         }
     }
 }

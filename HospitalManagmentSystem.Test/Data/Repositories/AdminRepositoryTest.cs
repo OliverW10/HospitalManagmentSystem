@@ -15,11 +15,6 @@ namespace HospitalManagmentSystem.Test.Data.Repositories
 {
     internal class AdminRepositoryTest
     {
-        private Mock<HospitalContext> _mockContext;
-        private Mock<DbSet<AdminModel>> _mockAdminSet;
-        private AdminRepository _AdminRepository;
-        private AdminModel _testAdmin;
-
         [SetUp]
         public void Setup()
         {
@@ -84,5 +79,10 @@ namespace HospitalManagmentSystem.Test.Data.Repositories
 
             Assert.Throws<InvalidOperationException>(() => AdminRepository.GetRandom(Random.Shared));
         }
+
+        private Mock<HospitalContext> _mockContext;
+        private Mock<DbSet<AdminModel>> _mockAdminSet;
+        private AdminRepository _AdminRepository;
+        private AdminModel _testAdmin;
     }
 }
