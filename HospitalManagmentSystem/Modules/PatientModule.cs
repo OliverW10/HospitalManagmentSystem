@@ -118,7 +118,7 @@ namespace HospitalManagmentSystem.Controllers
             {
                 menu.Text($"Email failed to send {ex.Message}");
             }
-            
+
             menu.WaitForInput();
 
             return () => GetPatientMainMenu(patient);

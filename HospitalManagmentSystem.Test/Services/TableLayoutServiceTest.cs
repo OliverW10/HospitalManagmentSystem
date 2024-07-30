@@ -1,10 +1,4 @@
-﻿using HospitalManagmentSystem.Database.Models;
-using HospitalManagmentSystem.Services.Implementations;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using HospitalManagmentSystem.Services.Implementations;
 
 namespace HospitalManagmentSystem.Test.Services
 {
@@ -21,7 +15,7 @@ namespace HospitalManagmentSystem.Test.Services
         [Test]
         public void TestGetTableWidths()
         {
-            var columnNames = new string[] { "asdf", "asdfadsf", "a" }; 
+            var columnNames = new string[] { "asdf", "asdfadsf", "a" };
             var data = new string[][] { new[] { "asdf", "xyz!", "a" } };
 
             for (int i = 1; i < 100; i++)
