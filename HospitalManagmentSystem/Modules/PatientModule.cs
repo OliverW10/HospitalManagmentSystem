@@ -111,7 +111,7 @@ namespace HospitalManagmentSystem.Controllers
 
             try
             {
-                _messager.Send(patient.User.Email, "Appointment booked", $"You have booked an appointment with {patient.Doctor.User.Name} about '{description}'");
+                _messager.Send(patient.User.Email, "Appointment Booked", $"You have booked an appointment with {patient.Doctor.User.Name} about '{description}'");
                 menu.Text("Email sent.");
             }
             catch (Exception ex)
