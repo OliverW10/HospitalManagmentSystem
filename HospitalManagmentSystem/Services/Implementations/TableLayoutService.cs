@@ -51,7 +51,7 @@
 
             EnlargeColumnsToFit(stringTable, numColumns, numRows, columnSizes, widthBudget);
 
-            EnlargeColumnsToFit(numColumns, columnSizes, widthBudget);
+            ShrinkColumnsToFit(numColumns, columnSizes, widthBudget);
 
             return columnSizes;
         }
@@ -79,7 +79,7 @@
             }
         }
 
-        private static void EnlargeColumnsToFit(int numColumns, int[] columnSizes, int widthBudget)
+        private static void ShrinkColumnsToFit(int numColumns, int[] columnSizes, int widthBudget)
         {
             // if under, go left to right adding one to each until at the limit
             var used = columnSizes.Sum();

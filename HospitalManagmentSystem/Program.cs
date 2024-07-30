@@ -27,7 +27,7 @@ namespace HospitalManagmentSystem
                 .AddTransient<IRepository<DoctorModel>, DoctorRepository>()
                 .AddTransient<IRepository<PatientModel>, PatientRepository>()
                 .AddTransient<IMenuBuilder, ConsoleMenuBuilder>()
-                .AddTransient<IMessageService, EmailService>()
+                .AddTransient<IMessageSender, EmailService>()
                 .AddTransient<IHasherService, HasherService>()
                 .AddTransient<IModuleLocator, ModuleLocator>()
                 .AddTransient<TableLayoutService>()
@@ -40,9 +40,6 @@ namespace HospitalManagmentSystem
                 .BuildServiceProvider();
 
             EnsureDatabaseIsPopulated(services);
-
-            //var emailer = services.GetRequiredService<IMessageService>();
-            //emailer.Send("oliver.warrick2@gmail.com", "this is the contents of my email test test test");
 
             var loginController = services.GetRequiredService<LoginModule>();
             Menu? currentMenu = loginController.GetLoginMenu();

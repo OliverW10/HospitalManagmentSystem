@@ -8,12 +8,13 @@ namespace HospitalManagmentSystem.Controllers
 {
     internal class PatientModule
     {
-        public PatientModule(IMenuBuilder menuFactory, IModuleLocator moduleFactory, IRepository<DoctorModel> doctorsRepo, IUnitOfWork uow)
+        public PatientModule(IMenuBuilder menuFactory, IModuleLocator moduleFactory, IRepository<DoctorModel> doctorsRepo, IUnitOfWork uow, IMessageSender messager)
         {
             _menuFactory = menuFactory;
             _moduleFactory = moduleFactory;
             _doctorRepo = doctorsRepo;
             _uow = uow;
+            _messager = messager;
         }
 
         public Menu? GetPatientMainMenu(PatientModel loggedInUser)
@@ -106,7 +107,19 @@ namespace HospitalManagmentSystem.Controllers
             _uow.SaveChanges();
 
             menu.Text("Your appointment has been booked successfully")
-                .WaitForInput();
+                .Text("Sending email...");
+
+            try
+            {
+                _messager.Send(patient.User.Email, "Appointment booked", $"You have booked an appointment with {patient.Doctor.User.Name} about '{description}'");
+                menu.Text("Email sent.");
+            }
+            catch (Exception ex)
+            {
+                menu.Text($"Email failed to send {ex.Message}");
+            }
+            
+            menu.WaitForInput();
 
             return () => GetPatientMainMenu(patient);
         }
@@ -137,5 +150,6 @@ namespace HospitalManagmentSystem.Controllers
         IModuleLocator _moduleFactory;
         IRepository<DoctorModel> _doctorRepo;
         IUnitOfWork _uow;
+        IMessageSender _messager;
     }
 }

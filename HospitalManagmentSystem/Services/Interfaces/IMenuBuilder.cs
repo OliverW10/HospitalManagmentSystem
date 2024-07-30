@@ -79,6 +79,6 @@ namespace HospitalManagmentSystem.Services.Interfaces
 
 
     // A 'Menu' function which returns the next menu to display
-    // a capturing lambda or class state should be used to pass values from one menu to antoerh
+    // a capturing lambda or class state should be used to pass values from one menu to another
     internal delegate Menu? Menu();
 }

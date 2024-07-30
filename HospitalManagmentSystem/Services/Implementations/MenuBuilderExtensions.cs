@@ -4,7 +4,7 @@ namespace HospitalManagmentSystem.Services.Implementations
 {
     static class IOpenMenuBuilderExtensions
     {
-        // Convinience overrides that do default validations
+        // Convinience overloads that do default validations
         public static IOpenMenuBuilder PromptForText(this IOpenMenuBuilder menu, string promptText, Action<string> recievePromptvalue)
         {
             return menu.PromptForText(promptText, recievePromptvalue, s => !string.IsNullOrWhiteSpace(s));
