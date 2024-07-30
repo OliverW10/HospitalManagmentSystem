@@ -16,17 +16,23 @@ namespace HospitalManagmentSystem.Services.Implementations
 
         public void Seed()
         {
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < 10; i++)
             {
                 _uow.AdminRepository.Add(new AdminModel { User = GetRandomizedUser() });
             }
+            // Required with Sqlite to force persistence of each user group in order so that the id's are generated in the correct order
+            // for sql server these should be removed because the whole seeding process should be a single transaction
+            _uow.SaveChanges();
+
             var doctors = new List<DoctorModel>();
-            for (int i = 0; i < 5; i++)
+            for (int i = 0; i < 10; i++)
             {
                 var doctor = new DoctorModel { User = GetRandomizedUser() };
                 _uow.DoctorRepository.Add(doctor);
                 doctors.Add(doctor);
             }
+            _uow.SaveChanges();
+
             var patients = new List<PatientModel>();
             for (int i = 0; i < 20; i++)
             {
@@ -34,8 +40,9 @@ namespace HospitalManagmentSystem.Services.Implementations
                 _uow.PatientRepository.Add(patient);
                 patients.Add(patient);
             }
+            _uow.SaveChanges();
 
-            for (int i = 0; i < 30; i++)
+            for (int i = 0; i < 50; i++)
             {
                 AddAppointment(doctors, patients);
             }

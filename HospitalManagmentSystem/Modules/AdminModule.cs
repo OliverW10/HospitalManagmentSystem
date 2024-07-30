@@ -18,7 +18,7 @@ namespace HospitalManagmentSystem.Controllers
         public Menu? GetAdminMainMenu(AdminModel loggedInUser)
         {
             return _menuFactory
-                .Title("Doctor Menu")
+                .Title("Admin Menu")
                 .Text($"Welcome to {Constants.ApplcationName}")
                 .Text($"Logged in as Admin - {loggedInUser.User.Name}\n")
                 .Text("Please choose an option:")
