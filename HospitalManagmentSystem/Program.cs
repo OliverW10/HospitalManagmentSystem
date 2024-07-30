@@ -18,7 +18,7 @@ namespace HospitalManagmentSystem
             // Maps interfaces to the conrete implementation to be used, can configure how the application will behave by chaging what is used
             // e.g. change IDbContextConfigurator to use a different db or IMenuBuilder to change how the ui is displayed
             ServiceProvider services = new ServiceCollection()
-                .AddSingleton<IDbContextConfigurator, LocalSqlServerConfigurator>()
+                .AddSingleton<IDbContextConfigurator, SQLiteContextConfigurator>()
                 .AddDbContext<HospitalContext>()
                 .AddTransient<IUnitOfWork, UnitOfWork>()
                 .AddTransient<IRepository<UserModel>, UserRepository>()
